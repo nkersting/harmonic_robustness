@@ -37,6 +37,8 @@ class ChatGPTTester(LLMTester):
         for _ in range(radius):
             randomstring = "".join([chr(random.randint(0, 31)) for _ in range(random.randint(1,3))])
             ball_points.append(point + " " + randomstring)
+        ball_nums = [[ord(x) for x in y] for y in ball_points]
+        print('BALL_NUMS: ', ball_nums)
         print('BALL: ', '\t'.join(ball_points))
         return ball_points
                 
@@ -83,9 +85,35 @@ def main():
 
     API_key = ""  # replace with own
     curr_tester = ChatGPTTester(API_key, radius=10)
-    in_text = "Answer simply yes or no: did jesus_christ really walk on water?"
+    in_text = "who does the united states export the most to?"
+    #in_text = "what school did sir isaac newton go to?"
+    #in_text = "who was mary's mother?"
+    #in_text = "who is rob kardashian dating now 2012?"
+    #in_text = "who plays nana in the royal family?"
+    #in_text = "where do logan browning live?"
+    #in_text = "who played todd manning on one life to live?"
     print(f"Anharmoniticity: {curr_tester.anharmoniticity(in_text)}")
 
+    exit()
+    f = open("webqa.tsv", "r")
+
+    qas = []
+    lines = f.readlines()
+    for line in lines:
+        qas.append(line.split("\t"))
+
+
+
+    for i, qapair in enumerate(qas):
+        if len(qapair) < 3:
+            continue
+        question = qapair[0]
+        print(f"--------------------------------------------{i}")
+        print(f"QUESTION={question}\tEXPECTED={qapair[1]}")
+        anhar = curr_tester.anharmoniticity(question)
+        print(f"{i}:\tANHAR={anhar}")
+
+        
 
 
 

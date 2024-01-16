@@ -29,7 +29,11 @@ class LLMTester(HarmonicTester):
     def ball_center_compare(self, central_value, ball_avg_value):
         """
         Difference between central value and ball_avg taken as sine of angle
+        Args:
+        central_value: a natural string output
+        ball_avg_value: average embedding of the ball outputs
         """
+        print("Central Answer:", central_value)
         central_vector = self.embedding(central_value)
         return sin_theta(central_vector, ball_avg_value)
 
