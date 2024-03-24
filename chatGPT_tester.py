@@ -5,6 +5,7 @@ import time
 import json
 import requests
 import random
+import os
 import numpy as np
 from LLM_tester import LLMTester
 from harmonic_tester import Point
@@ -12,7 +13,7 @@ from utils import normalize
 
 
 class ChatGPTTester(LLMTester):
-    def __init__(self, API_key, radius=0, temperature=0):
+    def __init__(self, radius=0, ord_limit=31, ord_size=3, temperature=0):
         """                                                                                                                      
         Specific to OpenAI's ChatGPT model
         Args:
@@ -21,8 +22,10 @@ class ChatGPTTester(LLMTester):
         temperature: ChatGPT parameter
         """
         super().__init__(self.ChatGPT_submit, radius, embedding=self.ADA_embedding)
-        self.api_key = API_key
+        self.api_key = os.environ.get("OPENAI_API_KEY")
         self.temperture = temperature
+        self.ord_limit = ord_limit
+        self.ord_size = ord_size
 
 
     def ball(self, point:Point, radius) -> list[Point]:
@@ -35,11 +38,11 @@ class ChatGPTTester(LLMTester):
 
         ball_points = []
         for _ in range(radius):
-            randomstring = "".join([chr(random.randint(0, 31)) for _ in range(random.randint(1,3))])
+            randomstring = "".join([chr(random.randint(0, self.ord_limit)) for _ in range(random.randint(1,self.ord_size))])
             ball_points.append(point + " " + randomstring)
         ball_nums = [[ord(x) for x in y] for y in ball_points]
-        print('BALL_NUMS: ', ball_nums)
-        print('BALL: ', '\t'.join(ball_points))
+        #print('BALL_NUMS: ', ball_nums)
+        #print('BALL: ', '\t'.join(ball_points))
         return ball_points
                 
     def ChatGPT_submit(self, question):
@@ -83,20 +86,28 @@ class ChatGPTTester(LLMTester):
         
 def main():
 
-    API_key = ""  # replace with own
-    curr_tester = ChatGPTTester(API_key, radius=10)
-    in_text = "who does the united states export the most to?"
+    curr_tester = ChatGPTTester(radius=10, ord_limit=31, ord_size=3, temperature=0)
+    #in_text = "Solve for x=sqrt(1+sqrt(7+sqrt(7+...)))"
+    #in_text = "Solve for x=1/(7+1/(7+1/(7+...)))"
+    #in_text = "Solve for x=1/(7*1/(7*1/(7*...)))"
+    #in_text = "Who is my son's father's son's father's son's father's son's father?"
+    #in_text = "Describe a particle physics theory with a 7th quark consistent with all known experimental signatures"
+    #in_text = "Describe the electronic configuration of a stable element with atomic number 148"
+    #in_text = "who does the united states export the most to?"
+    #in_text = "who does the united states export the most to?"
     #in_text = "what school did sir isaac newton go to?"
     #in_text = "who was mary's mother?"
     #in_text = "who is rob kardashian dating now 2012?"
     #in_text = "who plays nana in the royal family?"
     #in_text = "where do logan browning live?"
     #in_text = "who played todd manning on one life to live?"
-    print(f"Anharmoniticity: {curr_tester.anharmoniticity(in_text)}")
+    #print(f"Anharmoniticity: {curr_tester.anharmoniticity(in_text)}")
+    #exit()
 
-    exit()
-    f = open("webqa.tsv", "r")
-
+    f = open("/Users/lordkersting/neuro/Downloads/qa/webqa.tsv", "r")
+    #f = open("program_questions.tsv", "r")
+    #f = open("truthful.tsv", "r")
+    
     qas = []
     lines = f.readlines()
     for line in lines:
@@ -106,6 +117,8 @@ def main():
 
     for i, qapair in enumerate(qas):
         if len(qapair) < 3:
+            continue
+        if i > 2500:
             continue
         question = qapair[0]
         print(f"--------------------------------------------{i}")

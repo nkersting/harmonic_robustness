@@ -112,7 +112,7 @@ def main():
     n_dim = image_side**2
     mag = 100
     sampling_fraction = 0.001
-    image = Image.open('../test_images/cat707.jpg')
+    image = Image.open('/Users/lordkersting/neuro/Downloads/animals_small/raw-img/gallina/OIP-aYkFo3yJTQR3jUqOWVOiJAHaKG.jpeg')
     idx = 285  # Egpytian Cat
     small_image = transforms.Resize((image_side,image_side)).forward(image)
 

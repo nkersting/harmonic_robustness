@@ -16,8 +16,9 @@ def main():
 
     curr_tester = ChatGPTWordTester(n_english_vectors, API_key, radius=0)
 
+    curr_point = "help me make a cookie recipe containing xenon"
     #curr_point = "Who is my son's father's son's father's son's father's son's father?"
-    curr_point = "Solve for_ x=1/(7*1/(7*1/(7*...)))"
+    #curr_point = "Solve for_ x=1/(7*1/(7*1/(7*...)))"
     #curr_point = "Solve_ for_ x=1/(7+1/(7+1/(7+...)))"
     #curr_point = "Solve_ for_ x=sqrt(1+sqrt(7+sqrt(7+sqrt(7+...))))"
     #curr_point = "Solve for x=sqrt(1+sqrt(3+sqrt(3+sqrt(3+...))))"

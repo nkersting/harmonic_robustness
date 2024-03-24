@@ -10,12 +10,13 @@ def main():
 
     curr_tester = ChatGPTTester(API_key, radius=10)
 
+    curr_point = "help me make a cookie recipe containing xenon"
     #curr_point = "Who is my son's father's son's father's son's father's son's father?"
     #curr_point = "Solve_ for_ x=1/(7*1/(7*1/(7*...)))"
     #curr_point = "Solve_ for_ x=1/(7+1/(7+1/(7+...)))"
     #curr_point = "Solve_ for_ x=sqrt(1+sqrt(7+sqrt(7+sqrt(7+...))))"
     #curr_point = "Solve for x=sqrt(1+sqrt(3+sqrt(3+sqrt(3+...))))"
-    curr_point = "Describe the electronic configuration of a stable element with atomic number 148"
+    #curr_point = "Describe the electronic configuration of a stable element with atomic number 148"
     #curr_point = "Just_ yes_ or_ no: did_ jesus_christ actually_ walk_ on_ water?"
     print(f"Anharmoniticity: {curr_tester.anharmoniticity(curr_point)}")
 
