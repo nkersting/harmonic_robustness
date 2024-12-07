@@ -13,8 +13,8 @@ from utils import normalize
 
 
 
-class GPT4oTester(LLMTester):
-    def __init__(self, radius=0, ord_limit=31, ord_size=3, temperature=0):
+class GPT4o1Tester(LLMTester):
+    def __init__(self, radius=0, ord_limit=31, ord_size=3, temperature=1):
         """                                                                                                                      
         Specific to OpenAI's GPT4o model
         Args:
@@ -22,9 +22,9 @@ class GPT4oTester(LLMTester):
         radius: denotes number of random string insertions to include in ball
         temperature: GPT4o parameter
         """
-        super().__init__(self.GPT4o_submit, radius, embedding=self.ADA_embedding)
+        super().__init__(self.GPT4o1_submit, radius, embedding=self.ADA_embedding)
         self.api_key = os.environ.get("OPENAI_API_KEY")
-        self.temperture = temperature
+        self.temperature = temperature
         self.ord_limit = ord_limit
         self.ord_size = ord_size
 
@@ -44,9 +44,9 @@ class GPT4oTester(LLMTester):
         ball_nums = [[ord(x) for x in y] for y in ball_points]
         return ball_points
                 
-    def GPT4o_submit(self, question):
+    def GPT4o1_submit(self, question):
         url = 'https://api.openai.com/v1/chat/completions'
-        data = {"model": "gpt-4o-2024-05-13", "temperature": self.temperture, 
+        data = {"model": "o1-preview", "temperature": self.temperature, 
                 "messages": [{"role": "user",
                               "content": question
                               }],
@@ -60,6 +60,7 @@ class GPT4oTester(LLMTester):
             try:
                 r = requests.post(url, data=json.dumps(data), headers=headers)
                 content = json.loads(r.content.decode('utf8'))
+                print("CONTENT:", content)
                 return content["choices"][0]['message']['content']
             except Exception as e:
                 print("LLM EXCEPTION: ", e, r)
@@ -85,11 +86,12 @@ class GPT4oTester(LLMTester):
         
 def main():
 
-    curr_tester = GPT4oTester(radius=1, ord_limit=31, ord_size=3, temperature=0)
+    curr_tester = GPT4o1Tester(radius=10, ord_limit=31, ord_size=3, temperature=1)
 
 
     # Uncomment below for just testing one query    
-    in_text = "who won the olympic gold in freestyle swimming in 2008"
+    #in_text = "Solve for x=1/(7*1/(7*1/(7*...)))"
+    in_text = "Solve for x=1-1+1-1+1-1+1-..."
     print(f"Anharmoniticity: {curr_tester.anharmoniticity(in_text)}")
     exit()
 

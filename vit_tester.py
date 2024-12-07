@@ -4,27 +4,27 @@ import os
 import numpy as np
 from hi_dim_tester import HiDimTester
 import torch
-from transformers import AutoImageProcessor, ResNetForImageClassification
+from transformers import AutoImageProcessor, ResNetForImageClassification, ViTForImageClassification
 from PIL import Image, ImageOps
 import torchvision.transforms as transforms
 from functools import partial
 
 
-class ResNetTester(HiDimTester):
+class ViTTester(HiDimTester):
     """
-    Concrete PoC implementation of tester for ResNet on square images of typical resolution (i.e., more than 32x32,
+    Concrete PoC implementation of tester for Vision Transformer on square images of typical resolution (i.e., more than 32x32,
     but probably less than 500x500 for efficiency's sake)
     """
 
     def __init__(self, radius, img_side, idx, sampling_fraction=1):
-        self.inner_model = ResNetForImageClassification.from_pretrained("microsoft/resnet-50")
+        self.inner_model = ViTForImageClassification.from_pretrained("google/vit-base-patch16-224")
         self.transform = transforms.Compose([transforms.PILToTensor()])
         self.to_img_transform = transforms.ToPILImage()
-        self.processor = AutoImageProcessor.from_pretrained("microsoft/resnet-50")
-
+        self.processor = AutoImageProcessor.from_pretrained("google/vit-base-patch16-224")
+        
         self.img_idx = idx
         self.image_side = img_side
-        model = self.ResNetLogitPredict()
+        model = self.ViTLogitPredict()
         super().__init__(model, radius, img_side**2, sampling_fraction)
 
     def vector_to_gray_image(self, vector, xdim, ydim, scale_factor=1/255):
@@ -59,27 +59,27 @@ class ResNetTester(HiDimTester):
         new_gray_img_tensor = gray_img_tensor.expand(3,xdim,ydim)
         return self.to_img_transform(new_gray_img_tensor)
 
-    def ResNet_predict(self, image):
+    def ViT_predict(self, image):
         """
-        Processes image through ResNet to give predicted label
+        Processes image through Vision Transformer to give predicted label
 
         Args:
         image: image object
 
         Returns:
         tuple of predicted label and corresponding index 
-        """
-        
+        """        
         inputs = self.processor(image, return_tensors="pt")
 
         with torch.no_grad():
             logits = self.inner_model(**inputs).logits
-    
+
         # model predicts one of the 1000 ImageNet classes
         predicted_label = logits.argmax(-1).item()
         return self.inner_model.config.id2label[predicted_label], predicted_label
 
-    def ResNet_predict_logit_and_avg(self, image, idx):
+
+    def ViT_predict_logit_and_avg(self, image, idx):
         inputs = self.processor(image, return_tensors="pt")
 
         with torch.no_grad():
@@ -87,7 +87,7 @@ class ResNetTester(HiDimTester):
 
         return logits[0][idx], torch.mean(logits[0]).item()
     
-    def ResNet_predict_logit(self, image, idx):
+    def ViT_predict_logit(self, image, idx):
         """
         Gives predicted logit value of the image at given index value
 
@@ -105,11 +105,11 @@ class ResNetTester(HiDimTester):
 
         return logits[0][idx]
 
-    def resnet_idx_logit(self, idx, dim, point):
-        return self.ResNet_predict_logit(self.vector_to_gray_image(point, dim, dim), idx)
+    def vit_idx_logit(self, idx, dim, point):
+        return self.ViT_predict_logit(self.vector_to_gray_image(point, dim, dim), idx)
         
-    def ResNetLogitPredict(self):
-        return partial(self.resnet_idx_logit, self.img_idx, self.image_side)
+    def ViTLogitPredict(self):
+        return partial(self.vit_idx_logit, self.img_idx, self.image_side)
 
 
 def main():
@@ -123,37 +123,37 @@ def main():
     sampling_fraction = 0.001
 
     #path = '/Users/lordkersting/neuro/Downloads/animals_small/raw-img/gallina/'
-    #outfile = open('gallina.out', 'w')
+    #outfile = open('gallina.vit.out', 'w')
 
     #path = '/Users/lordkersting/neuro/Downloads/animals_small/raw-img/cane/'
-    #outfile = open('cane.out', 'w')
-    #outfile = open('cane.100.1.out', 'w')
+    #outfile = open('cane.vit.out', 'w')
+
 
     #path = '/Users/lordkersting/neuro/Downloads/animals_small/raw-img/cavallo/'
-    #outfile = open('cavallo.100.1.out', 'w')
+    #outfile = open('cavallo.vit.out', 'w')
 
     
     #path = '/Users/lordkersting/neuro/Downloads/animals_small/raw-img/elefante/'
-    #outfile = open('elefante.100.1.out', 'w') 
+    #outfile = open('elefante.vit.out', 'w') 
 
     #path = '/Users/lordkersting/neuro/Downloads/animals_small/raw-img/pecora/'
-    #outfile = open('pecora.out', 'w') 
+    #outfile = open('pecora.vit.out', 'w') 
 
     #path = '/Users/lordkersting/neuro/Downloads/animals_small/raw-img/scoiattolo/'
-    #outfile = open('scoiattolo.out', 'w')
+    #outfile = open('scoiattolo.vit.out', 'w')
     #outfile = open('scoiattolo.1.out', 'w') 
 
     #path = '/Users/lordkersting/neuro/Downloads/animals_small/raw-img/farfalla/'
-    #outfile = open('farfalla.out', 'w')
+    #outfile = open('farfalla.vit.out', 'w')
 
-    #path = '/Users/lordkersting/neuro/Downloads/animals_small/raw-img/ragno/'
-    #outfile = open('ragno.out', 'w')
+    path = '/Users/lordkersting/neuro/Downloads/animals_small/raw-img/ragno/'
+    outfile = open('ragno.vit.out', 'w')
 
-    path = '/Users/lordkersting/neuro/Downloads/animals_small/raw-img/mucca/'
-    outfile = open('mucca.out', 'w')
+    #path = '/Users/lordkersting/neuro/Downloads/animals_small/raw-img/mucca/'
+    #outfile = open('mucca.vit.out', 'w')
 
     #path = '/Users/lordkersting/neuro/Downloads/animals_small/raw-img/gatto/'
-    #outfile = open('gatto.out', 'w')
+    #outfile = open('gatto.vit.out', 'w')
 
     image_path = "images/"
     num_steps = 25
@@ -167,29 +167,28 @@ def main():
         small_image = transforms.Resize((image_side,image_side)).forward(image)
 
 
-        currtester = ResNetTester(mag, image_side, idx, sampling_fraction)
+        currtester = ViTTester(mag, image_side, idx, sampling_fraction)
         small_gray_image = currtester.image_to_gray_image(small_image)
         curr_point = currtester.gray_image_to_vector(small_gray_image)
-        img_class, img_idx = currtester.ResNet_predict(small_gray_image)
+        img_class, img_idx = currtester.ViT_predict(small_gray_image)
         #print(f"Starting out with central image: {img_idx}, {img_class}")
         #print(f"Anharmoniticity for {idx} is {currtester.anharmoniticity(curr_point)}")
 
         orig_anharm = currtester.anharmoniticity(curr_point)
-        pred_logit, avg_logit = currtester.ResNet_predict_logit_and_avg(small_gray_image, img_idx)
+        pred_logit, avg_logit = currtester.ViT_predict_logit_and_avg(small_gray_image, img_idx)
         
         for _ in range(num_steps):
             curr_point, anharm = currtester.follow_anharmonic_gradient(curr_point)
 
 
         curr_image = currtester.vector_to_gray_image(curr_point, 100, 100)
-        final_class, final_idx = currtester.ResNet_predict(currtester.vector_to_gray_image(curr_point, image_side, image_side))
-        final_pred_logit, final_avg_logit = currtester.ResNet_predict_logit_and_avg(curr_image, final_idx)
+        final_class, final_idx = currtester.ViT_predict(currtester.vector_to_gray_image(curr_point, image_side, image_side))
+        final_pred_logit, final_avg_logit = currtester.ViT_predict_logit_and_avg(curr_image, final_idx)
         output_string = f"{file}\t{img_idx}\t{img_class}\t{pred_logit}\t{avg_logit}\t{orig_anharm}\t{final_idx}\t{final_class}\t{final_pred_logit}\t{final_avg_logit}\t{anharm}\n"
         print(output_string)
         outfile.write(output_string)
-        curr_image.save(image_path + f"{file}.{num_steps}.adv.jpg")
-        
-        #print(f"Closest adversarial point with anharm={anharm} is {currtester.ResNet_predict(currtester.vector_to_gray_image(adv_point, image_side, image_side))}")
+        curr_image.save(image_path + f"{file}.{num_steps}.vit.adv.jpg")
+
 
     outfile.close()
     

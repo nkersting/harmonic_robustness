@@ -1,4 +1,4 @@
-#!/uAsr/bin/pythonAA
+#!/uAsr/bin/pythonA
 
 import scipy
 import time
@@ -12,17 +12,16 @@ from harmonic_tester import Point
 from utils import normalize
 
 
-
-class GPT4oTester(LLMTester):
+class GPT4Tester(LLMTester):
     def __init__(self, radius=0, ord_limit=31, ord_size=3, temperature=0):
         """                                                                                                                      
-        Specific to OpenAI's GPT4o model
+        Specific to OpenAI's GPT4 model
         Args:
         API_key: string for OpenAI access
         radius: denotes number of random string insertions to include in ball
-        temperature: GPT4o parameter
+        temperature: GPT4 parameter
         """
-        super().__init__(self.GPT4o_submit, radius, embedding=self.ADA_embedding)
+        super().__init__(self.GPT4_submit, radius, embedding=self.ADA_embedding)
         self.api_key = os.environ.get("OPENAI_API_KEY")
         self.temperture = temperature
         self.ord_limit = ord_limit
@@ -42,11 +41,13 @@ class GPT4oTester(LLMTester):
             randomstring = "".join([chr(random.randint(0, self.ord_limit)) for _ in range(random.randint(1,self.ord_size))])
             ball_points.append(point + " " + randomstring)
         ball_nums = [[ord(x) for x in y] for y in ball_points]
+        #print('BALL_NUMS: ', ball_nums)
+        #print('BALL: ', '\t'.join(ball_points))
         return ball_points
                 
-    def GPT4o_submit(self, question):
+    def GPT4_submit(self, question):
         url = 'https://api.openai.com/v1/chat/completions'
-        data = {"model": "gpt-4o-2024-05-13", "temperature": self.temperture, 
+        data = {"model": "gpt-4", "temperature": self.temperture, 
                 "messages": [{"role": "user",
                               "content": question
                               }],
@@ -85,16 +86,61 @@ class GPT4oTester(LLMTester):
         
 def main():
 
-    curr_tester = GPT4oTester(radius=1, ord_limit=31, ord_size=3, temperature=0)
+    curr_tester = GPT4Tester(radius=10, ord_limit=31, ord_size=3, temperature=0)
 
 
-    # Uncomment below for just testing one query    
-    in_text = "who won the olympic gold in freestyle swimming in 2008"
+    
+    #sentence = "How many calories does an egg have? "
+    #sentence = "who does the united states export the most to? "
+    """
+    outfile = open('isotropies.tsv','w')
+
+    f = open("truthful.tsv", "r")
+    
+    qas = []
+    lines = f.readlines()
+    for line in lines:
+        qas.append(line.split("\t"))
+
+
+    isotropies = []
+    for i, qapair in enumerate(qas):
+        if len(qapair) < 3:
+            continue
+        if i > 100:
+            continue
+        sentence = qapair[0]
+        N=10
+        avg_vals = curr_tester.ball_isotropy(sentence, curr_tester.ball(sentence, N))
+        isotropies.append(avg_vals[2])
+        print(sentence, avg_vals)
+        outfile.write(f"{sentence}\t{avg_vals[0]}\t{avg_vals[1]}\t{avg_vals[2]}\t{avg_vals[3]}\n")
+    outfile.close()
+    print(f"Average cosine angle: {np.mean(isotropies)} +/- {np.std(isotropies)/np.sqrt(len(isotropies))}")
+    exit()
+    """
+    
+    #in_text = "Solve for x=sqrt(1+sqrt(7+sqrt(7+...)))"
+    #in_text = "Solve for x=1/(7+1/(7+1/(7+...)))"
+    #in_text = "Solve for x=1/(7*1/(7*1/(7*...)))"
+    #in_text = "Who is my son's father's son's father's son's father's son's father?"
+    #in_text = "Describe a particle physics theory with a 7th quark consistent with all known experimental signatures"
+    #in_text = "Describe the electronic configuration of a stable element with atomic number 148"
+    #in_text = "who does the united states export the most to?"
+    #in_text = "who does the united states export the most to?"
+    #in_text = "what school did sir isaac newton go to?"
+    #in_text = "who was mary's mother?"
+    #in_text = "who is rob kardashian dating now 2012?"
+    #in_text = "who plays nana in the royal family?"
+    #in_text = "where do logan browning live?"
+    #in_text = "who played todd manning on one life to live?"
+    in_text = "what is 2+2?"
     print(f"Anharmoniticity: {curr_tester.anharmoniticity(in_text)}")
     exit()
 
-    
-    f = open("program_questions.tsv", "r")  # file of tab-separated data; must have question in first field, answer in second field
+    #f = open("/Users/lordkersting/neuro/Downloads/qa/webqa.tsv", "r")
+    #f = open("program_questions.tsv", "r")
+    f = open("truthful.tsv", "r")
     
     qas = []
     lines = f.readlines()
@@ -104,6 +150,10 @@ def main():
 
 
     for i, qapair in enumerate(qas):
+        if len(qapair) < 3:
+            continue
+        if i < 231:
+            continue
         question = qapair[0]
         print(f"--------------------------------------------{i}")
         print(f"QUESTION={question}\tEXPECTED={qapair[1]}")

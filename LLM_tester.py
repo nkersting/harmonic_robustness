@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import numpy as np
-from utils import sin_theta, cos_theta
+from utils import sin_theta, cos_theta, normalized
 from harmonic_tester import HarmonicTester, Point
 
 class LLMTester(HarmonicTester):
@@ -44,4 +44,9 @@ class LLMTester(HarmonicTester):
         """
         vecs = [self.embedding(x) for x in ball_points]
         average_vec = np.mean(vecs, axis=0)
-        return cos_theta(self.embedding(central_point), average_vec)
+        average_vec_plus = average_vec + np.std(vecs, axis=0)
+        #average_normed_vec = np.mean(normalized(vecs), axis=0)
+        central_vec = self.embedding(central_point)
+        cos_angles = [cos_theta(central_vec, v) for v in vecs]
+        cos_avg = cos_theta(central_vec, average_vec)
+        return np.mean(cos_angles), np.std(cos_angles)/np.sqrt(len(cos_angles)), cos_avg, abs(cos_avg - cos_theta(central_vec, average_vec_plus))
