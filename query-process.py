@@ -13,7 +13,7 @@ print("Content-Type: text/html\n")
 form = cgi.FieldStorage()
 query = form.getvalue("query")
 model = form.getvalue("model")
-N = form.getvalue("n-value")
+N = int(form.getvalue("n-value"))
 
 tester = None
 if "claude" in model:
@@ -22,10 +22,19 @@ elif "gpt-4" in model:
     tester = GPT4Tester(model, radius=N, ord_limit=31, ord_size=3, temperature=0)
 
 if tester is not None:
-    gamma, perturbed_queries, perturbed_outputs = tester.anharmoniticity(query)
+    results = tester.anharmoniticity(query)
 else:
-    gamma, perturbed_queries, perturbed_outputs = 0, [], []
+    results = {
+        "gamma":0,
+        "answer": "",
+        "queries": [],
+        "outputs": []
+        }
 
+gamma = results['gamma']
+answer = results['answer']
+perturbed_queries = results['queries']
+perturbed_outputs = results['outputs']
 
 print(f"""
 <!DOCTYPE html>
