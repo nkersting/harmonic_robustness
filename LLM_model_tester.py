@@ -14,7 +14,7 @@ from utils import normalize
 
 
 class LLM_model_tester(LLMTester):
-    def __init__(self, model_submitter, radius=0, ord_limit=31, ord_size=3, temperature=0):
+    def __init__(self, model_submitter, radius=0, ord_limit=31, ord_size=3):
         """                                                                                                                      
         Args:
         API_key: string for OpenAI access
@@ -22,9 +22,9 @@ class LLM_model_tester(LLMTester):
         temperature: GPT4o parameter
         """
         super().__init__(model_submitter, radius, embedding=self.ADA_embedding)
-        self.temperture = temperature
         self.ord_limit = ord_limit
         self.ord_size = ord_size
+        self.api_key = os.getenv("OPENAI_API_KEY")
 
 
     def ball(self, point:Point, radius) -> list[Point]:
@@ -58,36 +58,4 @@ class LLM_model_tester(LLMTester):
                 print("ADA EXCEPTION: ", e, content)
                 time.sleep(1)
 
-        
-def main():
-
-    curr_tester = LLM_model_tester(radius=10, ord_limit=31, ord_size=3, temperature=0)
-
-    in_text = "what kind of car does Nick Kersting drive?"
-    print(f"Anharmoniticity: {curr_tester.anharmoniticity(in_text)}")
-    exit()
-
-    
-    f = open("program_questions.tsv", "r")  # file of tab-separated data; must have question in first field, answer in second field
-    
-    qas = []
-    lines = f.readlines()
-    for line in lines:
-        qas.append(line.split("\t"))
-
-
-
-    for i, qapair in enumerate(qas):
-        question = qapair[0]
-        print(f"--------------------------------------------{i}")
-        print(f"QUESTION={question}\tEXPECTED={qapair[1]}")
-        anhar = curr_tester.anharmoniticity(question)
-        print(f"{i}:\tANHAR={anhar}")
-
-        
-
-
-
-
-if __name__ == "__main__":
-    main()
+     
