@@ -46,7 +46,8 @@ class HarmonicTester():
     
     def average_ball_value(self, point:Point):
         """
-        Computes the average value of the model on a ball surrounding the given point
+        Computes the average value of the model on a ball surrounding the given point.
+        Returns this average value, the queries made to the model, and the outputs of the model from which average is computed
         """
         ball_points = self.ball(point, self.radius)
         return self.average_model_value(ball_points)
@@ -63,8 +64,13 @@ class HarmonicTester():
         Computes anharmoniticity at the input point by evaluating model on a ball around this point and taking average 
         """
         central_value = self.model(point)
-        ball_avg_value = self.average_ball_value(point)
-        return self.ball_center_compare(central_value, ball_avg_value)
+        ball_avg_value, queries, outputs = self.average_ball_value(point)
+        return {
+            "gamma": self.ball_center_compare(central_value, ball_avg_value),
+            "answer": central_value,
+            "queries": queries,
+            "outputs": outputs
+                 }
     
 
     def follow_anharmonic_gradient(self, central_point: Point, upgrad=True) -> (Point, float):
@@ -81,7 +87,7 @@ class HarmonicTester():
         """
 
         ball_points = self.ball(central_point, self.radius)
-        anharms = [self.anharmoniticity(p) for p in ball_points]
+        anharms = [self.anharmoniticity(p)["gamma"] for p in ball_points]
         if upgrad == True:
             return (ball_points[np.argmax(anharms)], max(anharms))
         else:

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import numpy as np
-from utils import sin_theta, cos_theta, normalized
+from utils import sin_theta, cos_theta
 from harmonic_tester import HarmonicTester, Point
 
 class LLMTester(HarmonicTester):
@@ -19,12 +19,12 @@ class LLMTester(HarmonicTester):
 
     def average_model_value(self, points:list[Point]):
         """
-        Computes the average embedding of the model outputs for each of the Points (strings)
+        Computes the average embedding of the model outputs for each of the Points (strings).
+        Returns this average embedding, the points, and the model evaluated at points
         """
         model_vals = [self.model(x) for x in points]
-        print(model_vals)
         vecs = [self.embedding(x) for x in model_vals]
-        return np.mean(vecs, axis=0)
+        return np.mean(vecs, axis=0), points, model_vals
     
     def ball_center_compare(self, central_value, ball_avg_value):
         """
@@ -33,7 +33,6 @@ class LLMTester(HarmonicTester):
         central_value: a natural string output
         ball_avg_value: average embedding of the ball outputs
         """
-        print("Central Answer:", central_value)
         central_vector = self.embedding(central_value)
         return sin_theta(central_vector, ball_avg_value)
 

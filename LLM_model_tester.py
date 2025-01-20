@@ -1,6 +1,5 @@
 #!/uAsr/bin/pythonAA
 
-import scipy
 import time
 import json
 import requests
@@ -9,7 +8,6 @@ import os
 import numpy as np
 from LLM_tester import LLMTester
 from harmonic_tester import Point
-from utils import normalize
 
 
 

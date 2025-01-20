@@ -48,7 +48,11 @@ def main():
     gpt4o_mini_tester = GPT4Tester("gpt-4o-mini-2024-07-18", radius=10, ord_limit=31, ord_size=3, temperature=0)
 
     in_text = "what kind of car does Michael Weston drive?"
-    print(f"Anharmoniticity: {gpt4o_mini_tester.anharmoniticity(in_text)}")
+    results = gpt4o_mini_tester.anharmoniticity(in_text)
+    print(f"Anharmoniticity: {results['gamma']}\n")
+    print(f"Central Answer: {results['answer']}\n")
+    print(f"Perturbed Queries: {results['queries']}\n")
+    print(f"Perturbed Outputs: {results['outputs']}\n")
 
 
 if __name__ == "__main__":

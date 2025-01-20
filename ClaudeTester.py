@@ -45,7 +45,12 @@ def main():
     claude_sonnet_tester = ClaudeTester("claude-3-5-sonnet-20241022", radius=10, ord_limit=31, ord_size=3, temperature=0)
 
     in_text = "what kind of car does Michael Weston drive?"
-    print(f"Anharmoniticity: {claude_sonnet_tester.anharmoniticity(in_text)}")
+    results = claude_sonnet_tester.anharmoniticity(in_text)
+
+    print(f"Anharmoniticity: {results['gamma']}\n")
+    print(f"Central Answer: {results['answer']}\n")
+    print(f"Perturbed Queries: {results['queries']}\n")
+    print(f"Perturbed Outputs: {results['outputs']}\n")
 
 
 if __name__ == "__main__":
