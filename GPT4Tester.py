@@ -1,17 +1,11 @@
 #!/uAsr/bin/pythonAA
 
-import scipy
 import time
 import json
 import requests
-import random
 import os
 from functools import partial
-import numpy as np
-from LLM_tester import LLMTester
 from LLM_model_tester import LLM_model_tester
-from harmonic_tester import Point
-from utils import normalize
 
 
 class GPT4Tester(LLM_model_tester):
