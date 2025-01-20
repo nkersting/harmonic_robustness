@@ -2,66 +2,11 @@
 
 import cgi
 import cgitb
-import random
-import requests
-import json 
-import time
-from LLM_model_tester import LLM_model_tester
+from ClaudeTester import ClaudeTester
+from GPT4Tester import GPT4Tester
+
 
 cgitb.enable()
-
-def generate_perturbed_queries(query, n=10):
-    return [f"{query} variant {i+1}" for i in range(n)]
-
-def compute_gamma(query, model):
-    # Placeholder for actual gamma computation
-    return random.random()
-
-def compute_perturbed_output(query, model):
-    # Placeholder for actual output computation
-    return f"Output for {query} with {model}"
-
-
-def GPT_submit(self, question, model):
-    url = 'https://api.openai.com/v1/chat/completions'
-    data = {"model": model, "temperature": self.temperture,
-            "messages": [{"role": "user",
-                            "content": question
-                            }],
-            "n": 1
-            }
-    headers = {'content-type': 'application/json',
-                'Authorization': self.api_key}
-    payload = {'data': data, 'headers': headers}
-    while(1):
-        r = None
-        try:
-            r = requests.post(url, data=json.dumps(data), headers=headers)
-            content = json.loads(r.content.decode('utf8'))
-            return content["choices"][0]['message']['content']
-        except Exception as e:
-            print("LLM EXCEPTION: ", e, r)
-            time.sleep(60)
-
-def Claude_submit(self, question, model):
-    while(1):
-        message = None
-        try:
-            message = self.claude_client.messages.create(
-                max_tokens=1024,
-                messages=[
-                    {
-                        "role": "user",
-                        "content": question
-                    }
-                ],
-                model=model,
-                temperature=self.temperature
-    )
-            return message.content[0].text
-        except Exception as e:
-            print("LLM EXCEPTION: ", e, message)
-            time.sleep(10)    
 
 print("Content-Type: text/html\n")
 
@@ -70,9 +15,17 @@ query = form.getvalue("query")
 model = form.getvalue("model")
 N = form.getvalue("n-value")
 
-perturbed_queries = generate_perturbed_queries(query)
-gamma = compute_gamma(query, model)
-perturbed_outputs = [compute_perturbed_output(q, model) for q in perturbed_queries]
+tester = None
+if "claude" in model:
+    tester = ClaudeTester(model, radius=N, ord_limit=31, ord_size=3, temperature=0)
+elif "gpt-4" in model:
+    tester = GPT4Tester(model, radius=N, ord_limit=31, ord_size=3, temperature=0)
+
+if tester is not None:
+    gamma, perturbed_queries, perturbed_outputs = tester.anharmoniticity(query)
+else:
+    gamma, perturbed_queries, perturbed_outputs = 0, [], []
+
 
 print(f"""
 <!DOCTYPE html>
