@@ -7,16 +7,30 @@
     <style>
         body {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #f0f0f0;
-            flex-direction: column;
+            background: linear-gradient(135deg, #f0f0f0, #c0c0c0);
+            font-family: Arial, sans-serif;
+        }
+        .title-box {
+            background-color: #fff;
+            padding: 10px 20px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            text-align: center;
         }
         .container {
             display: flex;
             align-items: flex-start;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
         }
         form {
             background-color: #fff;
@@ -66,10 +80,21 @@
             align-items: center;
             margin-bottom: 10px;
         }
+        .info-box {
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            word-wrap: break-word;
+        }
     </style>
 </head>
 <body>
-    <h1>Gamma Hallucination Detector</h1>
+    <div class="title-box">
+        <h1>Gamma Hallucination Detector for LLMs</h1>
+    </div>
     <div class="container">
         <form action="/cgi-bin/query-process.cgi" method="post">
             <label for="query">Query:</label>
@@ -123,9 +148,14 @@
             <br><br>
             <input type="submit" value="Submit">
         </form>
-        <p>This is a simple interface around the Harmonic Robustness technique for measuring LLM Hallucination
-            as described in the paper <a href="https://arxiv.org/abs/2404.19708">"Harmonic LLMs are Trustworthy"</a>.
-        </p>
+        <div class="info-box">
+            <p>This is a simple interface around the Harmonic Robustness technique for measuring LLM Hallucination as described in the paper <a href="https://arxiv.org/abs/2404.19708">"Harmonic LLMs are Trustworthy"</a>.</p>
+            <p>Usage:</p>
+            <p>1. Enter a query in the "Query" field.</p>
+            <p>2. Select a model from the "Select Model" radio buttons. Note this list is quite limited at the moment but will be expanded in the future.</p>
+            <p>3. Select the number of variants (N) you would like to generate for the query. In general, higher N gives more accurate results but takes longer.</p>
+            <p>4. Click "Submit" to measure the hallucination (results dumped to next page).</p>
+        </div>
     </div>
 </body>
 </html>
