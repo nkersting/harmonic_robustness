@@ -5,7 +5,6 @@ import cgitb
 from ClaudeTester import ClaudeTester
 from GPT4Tester import GPT4Tester
 
-
 cgitb.enable()
 
 print("Content-Type: text/html\n")
@@ -25,11 +24,11 @@ if tester is not None:
     results = tester.anharmoniticity(query)
 else:
     results = {
-        "gamma":0,
+        "gamma": 0,
         "answer": "",
         "queries": [],
         "outputs": []
-        }
+    }
 
 gamma = results['gamma']
 answer = results['answer']
@@ -44,44 +43,65 @@ print(f"""
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Query Result</title>
     <style>
-        .result-box {{
-            border: 1px solid black;
-            padding: 10px;
-            margin: 10px;
+        body {{
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #f0f0f0, #c0c0c0);
         }}
-        .side-window {{
-            float: left;
-            width: 45%;
-            margin: 10px;
+        .result-box {{
+            background-color: #fff;
+            padding: 20px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-bottom: 20px;
+        }}
+        .link-box {{
+            margin-top: 20px;
+        }}
+        .queries-outputs {{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }}
+        .query-output-pair {{
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }}
+        .query, .output {{
+            background-color: #fff;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin: 0 10px;
+            width: 300px;
+            word-wrap: break-word;
+        }}
+        .line {{
+            width: 2px;
+            height: 50px;
+            background-color: #007bff;
         }}
     </style>
 </head>
 <body>
-    <h1>Query Result</h1>
     <div class="result-box">
-        <h2>Gamma: {gamma}</h2>
+        <h1>Gamma Result</h1>
+        <p>Gamma: {gamma:.3f}</p>
     </div>
-    <div class="side-window">
-        <h3>Perturbed Queries</h3>
-        <ul>
-""")
-
-for query in perturbed_queries:
-    print(f"<li>{query}</li>")
-
-print("""
-        </ul>
+    <div class="queries-outputs">
+        <h2>Perturbed Queries and Outputs</h2>
+        {"".join(f'<div class="query-output-pair"><div class="query">{pq}</div><div class="line"></div><div class="output">{po}</div></div>' for pq, po in zip(perturbed_queries, perturbed_outputs))}
     </div>
-    <div class="side-window">
-        <h3>Perturbed Outputs</h3>
-        <ul>
-""")
-
-for output in perturbed_outputs:
-    print(f"<li>{output}</li>")
-
-print("""
-        </ul>
+    <div class="link-box">
+        <a href="/hallucination.html">Go back to the main page</a>
     </div>
 </body>
 </html>
