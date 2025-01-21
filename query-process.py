@@ -40,6 +40,17 @@ def escape_control_chars(text):
 
 escaped_queries = [escape_control_chars(pq) for pq in perturbed_queries]
 
+# Determine the gamma message and color
+if gamma < 0.1:
+    gamma_message = "Probably Trustworthy"
+    gamma_color = "green"
+elif 0.1 <= gamma <= 0.2:
+    gamma_message = "Possible Hallucination"
+    gamma_color = "yellow"
+else:
+    gamma_message = "Likely Hallucination"
+    gamma_color = "red"
+
 print(f"""
 <!DOCTYPE html>
 <html lang="en">
@@ -75,7 +86,7 @@ print(f"""
             box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
             font-size: 24px;
             font-weight: bold;
-            color: #000;
+            color: {gamma_color};
             margin-top: 10px;
         }}
         .link-box {{
@@ -119,6 +130,7 @@ print(f"""
     <div class="result-box">
         <h1>Gamma</h1>
         <div class="gamma-box">{gamma:.3f}</div>
+        <p>{gamma_message}</p>
     </div>
     <div class="queries-outputs">
         <h2>Perturbed Queries and Outputs</h2>
