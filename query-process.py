@@ -74,6 +74,8 @@ print(f"""
             display: flex;
             flex-direction: column;
             align-items: center;
+            max-height: 50vh;
+            overflow-y: auto;
         }}
         .query-output-pair {{
             display: flex;
@@ -86,7 +88,7 @@ print(f"""
             border: 1px solid #ccc;
             border-radius: 5px;
             margin: 0 10px;
-            width: 300px;
+            width: 400px; /* Increased width */
             word-wrap: break-word;
         }}
         .line {{
