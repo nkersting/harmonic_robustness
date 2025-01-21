@@ -36,7 +36,7 @@ perturbed_queries = results['queries']
 perturbed_outputs = results['outputs']
 
 def escape_control_chars(text):
-    return ''.join(f'/x{ord(c):02x}' if ord(c) < 32 else c for c in text)
+    return ''.join(f'<span style="color:red;">/x{ord(c):02x}</span>' if ord(c) < 32 else c for c in text)
 
 escaped_queries = [escape_control_chars(pq) for pq in perturbed_queries]
 
@@ -117,7 +117,7 @@ print(f"""
             background-color: #e0faef;
         }}
         .output {{
-            background-color: #e0f7fa;
+            background-color: #85edc7;
         }}
         .line {{
             width: 2px;
@@ -137,7 +137,7 @@ print(f"""
         {"".join(f'<div class="query-output-pair"><div class="query">{pq}</div><div class="line"></div><div class="output">{po}</div></div>' for pq, po in zip(escaped_queries, perturbed_outputs))}
     </div>
     <div class="link-box">
-        <a href="/hallucination.html">Go back to the main page</a>
+        <a href="/hallucination.html">Go back to measure another query</a>
     </div>
 </body>
 </html>
