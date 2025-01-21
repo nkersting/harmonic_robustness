@@ -67,6 +67,17 @@ print(f"""
             text-align: center;
             margin-bottom: 20px;
         }}
+        .gamma-box {{
+            background-color: #39ff14; /* Electric green background */
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+            font-size: 24px;
+            font-weight: bold;
+            color: #000;
+            margin-top: 10px;
+        }}
         .link-box {{
             margin-top: 20px;
         }}
@@ -92,10 +103,10 @@ print(f"""
             word-wrap: break-word;
         }}
         .query {{
-            background-color: #e0f7fa;
+            background-color: #e0faef;
         }}
         .output {{
-            background-color: #ffeb3b;
+            background-color: #e0f7fa;
         }}
         .line {{
             width: 2px;
@@ -107,7 +118,7 @@ print(f"""
 <body>
     <div class="result-box">
         <h1>Gamma</h1>
-        <h1>{gamma:.3f}</h1>
+        <div class="gamma-box">{gamma:.3f}</div>
     </div>
     <div class="queries-outputs">
         <h2>Perturbed Queries and Outputs</h2>
