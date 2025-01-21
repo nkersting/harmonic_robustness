@@ -35,6 +35,11 @@ answer = results['answer']
 perturbed_queries = results['queries']
 perturbed_outputs = results['outputs']
 
+def escape_control_chars(text):
+    return ''.join(f'/x{ord(c):02x}' if ord(c) < 32 else c for c in text)
+
+escaped_queries = [escape_control_chars(pq) for pq in perturbed_queries]
+
 print(f"""
 <!DOCTYPE html>
 <html lang="en">
@@ -93,12 +98,12 @@ print(f"""
 </head>
 <body>
     <div class="result-box">
-        <h1>Gamma Result</h1>
-        <p>Gamma: {gamma:.3f}</p>
+        <h1>Gamma</h1>
+        <h1>{gamma:.3f}</h1>
     </div>
     <div class="queries-outputs">
         <h2>Perturbed Queries and Outputs</h2>
-        {"".join(f'<div class="query-output-pair"><div class="query">{pq}</div><div class="line"></div><div class="output">{po}</div></div>' for pq, po in zip(perturbed_queries, perturbed_outputs))}
+        {"".join(f'<div class="query-output-pair"><div class="query">{pq}</div><div class="line"></div><div class="output">{po}</div></div>' for pq, po in zip(escaped_queries, perturbed_outputs))}
     </div>
     <div class="link-box">
         <a href="/hallucination.html">Go back to the main page</a>
