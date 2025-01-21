@@ -3,27 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Query Form</title>
+    <title>Gamma Hallucination Detector</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            flex-direction: column;
+        }
+        .container {
+            display: flex;
+            align-items: flex-start;
+        }
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px; /* Increased width */
+            margin-right: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"], input[type="range"], input[type="submit"] {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        input[type="radio"] {
+            margin-right: 5px;
+        }
+        input[type="submit"] {
+            background-color: #007bff; /* Blue background */
+            color: white; /* White text */
+            border: none; /* Remove border */
+            padding: 10px; /* Add padding */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer; /* Pointer cursor on hover */
+            font-size: 16px; /* Increase font size */
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+        .slider-container {
+            position: relative;
+            width: 100%;
+        }
+        .slider-value {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: bold;
+        }
+        .radio-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
-    <form action="/cgi-bin/query-process.cgi" method="post">
-        <label for="query">Query:</label>
-        <input type="text" id="query" name="query" value="query" onfocus="if(this.value=='query'){this.value=''; this.style.color='black';}" style="color:grey;">
-        <br><br>
-        <label for="model">Select Model:</label><br>
-        <input type="radio" id="gpt-4o" name="model" value="gpt-4o-2024-11-20">
-        <label for="gpt-4o">GPT-4o</label><br> 
-        <input type="radio" id="gpt-4o-mini" name="model" value="gpt-4o-mini-2024-07-18">
-        <label for="gpt-4o-mini">GPT-4o-mini</label><br>
-        <input type="radio" id="claude-sonnet" name="model" value="claude-3-5-sonnet-20241022">
-        <label for="claude-sonnet">Claude-Sonnet</label><br>
-        <input type="radio" id="claude-haiku" name="model" value="claude-3-haiku-20240307">
-        <label for="claude-haiku">Claude-Haiku</label><br><br>
-        <label for="n-value">Number of Variants (N):</label>
-        <input type="range" id="n-value" name="n-value" min="1" max="20" value="10" oninput="this.nextElementSibling.value = this.value">
-        <output>10</output>
-        <br><br>
-        <input type="submit" value="Submit">
-    </form>
+    <h1>Gamma Hallucination Detector</h1>
+    <div class="container">
+        <form action="/cgi-bin/query-process.cgi" method="post">
+            <label for="query">Query:</label>
+            <input type="text" id="query" name="query" value="query" onfocus="if(this.value=='query'){this.value=''; this.style.color='black';}" style="color:grey;">
+            <br><br>
+            <label for="model">Select Model:</label><br>
+            <div class="radio-group">
+                <input type="radio" id="gpt-4o" name="model" value="gpt-4o-2024-11-20">
+                <label for="gpt-4o">GPT-4o</label>
+            </div>
+            <div class="radio-group">
+                <input type="radio" id="gpt-4o-mini" name="model" value="gpt-4o-mini-2024-07-18">
+                <label for="gpt-4o-mini">GPT-4o-mini</label>
+            </div>
+            <div class="radio-group">
+                <input type="radio" id="claude-sonnet" name="model" value="claude-3-5-sonnet-20241022">
+                <label for="claude-sonnet">Claude-Sonnet</label>
+            </div>
+            <div class="radio-group">
+                <input type="radio" id="claude-haiku" name="model" value="claude-3-haiku-20240307">
+                <label for="claude-haiku">Claude-Haiku</label>
+            </div>
+            <br>
+            <label for="n-value">Number of Variants (N):</label>
+            <div class="slider-container">
+                <span class="slider-value" id="slider-value">10</span>
+                <input type="range" id="n-value" name="n-value" min="1" max="20" value="10" list="tickmarks" oninput="document.getElementById('slider-value').innerText = this.value">
+            </div>
+            <datalist id="tickmarks">
+                <option value="1" label="1"></option>
+                <option value="2" label="2"></option>
+                <option value="3" label="3"></option>
+                <option value="4" label="4"></option>
+                <option value="5" label="5"></option>
+                <option value="6" label="6"></option>
+                <option value="7" label="7"></option>
+                <option value="8" label="8"></option>
+                <option value="9" label="9"></option>
+                <option value="10" label="10"></option>
+                <option value="11" label="11"></option>
+                <option value="12" label="12"></option>
+                <option value="13" label="13"></option>
+                <option value="14" label="14"></option>
+                <option value="15" label="15"></option>
+                <option value="16" label="16"></option>
+                <option value="17" label="17"></option>
+                <option value="18" label="18"></option>
+                <option value="19" label="19"></option>
+                <option value="20" label="20"></option>
+            </datalist>
+            <br><br>
+            <input type="submit" value="Submit">
+        </form>
+        <p>This is a simple interface around the Harmonic Robustness technique for measuring LLM Hallucination
+            as described in the paper <a href="https://arxiv.org/abs/2404.19708">"Harmonic LLMs are Trustworthy"</a>.
+        </p>
+    </div>
 </body>
 </html>
