@@ -89,14 +89,40 @@
             max-width: 400px;
             word-wrap: break-word;
         }
+        .spinner {
+            display: none;
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #007bff;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 2s linear infinite;
+            margin-top: 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .computing-text {
+            display: none;
+            margin-top: 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
     </style>
+    <script>
+        function showSpinner() {
+            document.getElementById('spinner').style.display = 'block';
+            document.getElementById('computing-text').style.display = 'block';
+        }
+    </script>
 </head>
 <body>
     <div class="title-box">
-        <h1>Gamma Hallucination Detector for LLMs</h1>
+        <h1>Gamma Hallucination Detector</h1>
     </div>
     <div class="container">
-        <form action="/cgi-bin/query-process.cgi" method="post">
+        <form action="/cgi-bin/query-process.cgi" method="post" onsubmit="showSpinner()">
             <label for="query">Query:</label>
             <input type="text" id="query" name="query" value="query" onfocus="if(this.value=='query'){this.value=''; this.style.color='black';}" style="color:grey;">
             <br><br>
@@ -150,12 +176,9 @@
         </form>
         <div class="info-box">
             <p>This is a simple interface around the Harmonic Robustness technique for measuring LLM Hallucination as described in the paper <a href="https://arxiv.org/abs/2404.19708">"Harmonic LLMs are Trustworthy"</a>.</p>
-            <p>Usage:</p>
-            <p>1. Enter a query in the "Query" field.</p>
-            <p>2. Select a model from the "Select Model" radio buttons. Note this list is quite limited at the moment but will be expanded in the future.</p>
-            <p>3. Select the number of variants (N) you would like to generate for the query. In general, higher N gives more accurate results but takes longer.</p>
-            <p>4. Click "Submit" to measure the hallucination (results dumped to next page).</p>
         </div>
     </div>
+    <div id="spinner" class="spinner"></div>
+    <div id="computing-text" class="computing-text">Computing...</div>
 </body>
 </html>
