@@ -91,6 +91,12 @@ print(f"""
             width: 400px; /* Increased width */
             word-wrap: break-word;
         }}
+        .query {{
+            background-color: #e0f7fa;
+        }}
+        .output {{
+            background-color: #ffeb3b;
+        }}
         .line {{
             width: 2px;
             height: 50px;
