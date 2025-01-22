@@ -171,6 +171,55 @@
             }
             animate();
         }
+
+        function computeHarmoniticity() {
+            const functionInput = document.getElementById('function-input').value;
+            const xMin = parseFloat(document.getElementById('x-min').value);
+            const xMax = parseFloat(document.getElementById('x-max').value);
+            const yMin = parseFloat(document.getElementById('y-min').value);
+            const yMax = parseFloat(document.getElementById('y-max').value);
+            let f;
+            try {
+                f = new Function('x', 'y', `with(Math){ return ${functionInput} }`);
+                f(0, 0); // Test
+            } catch (error) {
+                alert('Invalid function input for harmoniticity.');
+                return;
+            }
+            const steps = 20; // Subgrid resolution
+            const dx = (xMax - xMin) / steps;
+            const dy = (yMax - yMin) / steps;
+            const values = [];
+            for (let i = 0; i <= steps; i++) {
+                const row = [];
+                const x = xMin + i * dx;
+                for (let j = 0; j <= steps; j++) {
+                    const y = yMin + j * dy;
+                    row.push(f(x, y));
+                }
+                values.push(row);
+            }
+            let sumDiff = 0;
+            let count = 0;
+            for (let i = 1; i < steps; i++) {
+                for (let j = 1; j < steps; j++) {
+                    const val = values[i][j];
+                    let neighborSum = 0;
+                    for (let di = -1; di <= 1; di++) {
+                        for (let dj = -1; dj <= 1; dj++) {
+                            if (!(di === 0 && dj === 0)) {
+                                neighborSum += values[i + di][j + dj];
+                            }
+                        }
+                    }
+                    const avgNeighbors = neighborSum / 8;
+                    sumDiff += (val - avgNeighbors);
+                    count++;
+                }
+            }
+            const harmoniticity = sumDiff / count;
+            alert(`Harmoniticity: ${harmoniticity}`);
+        }
     </script>
 </head>
 <body>
@@ -179,16 +228,17 @@
         <input type="text" id="function-input" value="x*x + y*y">
         <br>
         <label for="x-min">x-min: </label>
-        <input type="number" id="x-min" value="-10">
+        <input type="number" id="x-min" value="-2">
         <label for="x-max">x-max: </label>
-        <input type="number" id="x-max" value="10">
+        <input type="number" id="x-max" value="2">
         <br>
         <label for="y-min">y-min: </label>
-        <input type="number" id="y-min" value="-10">
+        <input type="number" id="y-min" value="-2">
         <label for="y-max">y-max: </label>
-        <input type="number" id="y-max" value="10">
+        <input type="number" id="y-max" value="2">
         <br>
         <button onclick="plotFunction()">Plot</button>
+        <button onclick="computeHarmoniticity()">Compute Harmoniticity</button>
     </div>
     <canvas id="plot-canvas" width="800" height="600"></canvas>
 </body>
