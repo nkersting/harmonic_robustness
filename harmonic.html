@@ -121,7 +121,16 @@
                 }
             }
             const harmoniticity = sumDiff / count;
-            alert(`Harmoniticity: ${harmoniticity}`);
+            displayHarmoniticity(harmoniticity);
+        }
+
+        function displayHarmoniticity(value) {
+            const canvas = document.getElementById('plot-canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, 30); // Clear previous text
+            ctx.fillStyle = 'black';
+            ctx.font = '20px Arial';
+            ctx.fillText(`Gamma: ${value}`, 10, 20);
         }
 
         let isSelecting = false;
@@ -217,7 +226,7 @@
                     count++;
                 }
             }
-            alert(`Harmoniticity in selection: ${sumDiff / count || 0}`);
+            displayHarmoniticity(sumDiff / count || 0);
         }
 
         // Ensure selection can be initialized right away
@@ -240,7 +249,6 @@
         <input type="number" id="y-max" value="2">
         <br>
         <button onclick="plotFunction()">Plot</button>
-        <button onclick="computeHarmoniticity()">Compute Harmoniticity</button>
     </div>
     <canvas id="plot-canvas" width="800" height="600"></canvas>
 </body>
