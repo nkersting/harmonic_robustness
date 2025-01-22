@@ -75,6 +75,96 @@
             ctx.putImageData(imageData, 0, 0);
         }
 
+        function generateRandomFunction() {
+            let maxLen = 30;
+            let expr = generateRandomExpression(maxLen);
+            document.getElementById('function-input').value = expr;
+        }
+
+        function generateRandomExpression(maxLen) {
+            function generateExpr(maxLen) {
+                if (maxLen <= 0) {
+                    return ''; // Can't generate any more
+                }
+                let rand = Math.random();
+                if (maxLen <= 1) {
+                    // Can't generate functions or operators, generate a factor only
+                    return generateFactor();
+                }
+                if (rand < 0.3) {
+                    // Generate a variable or number
+                    let factor = generateFactor();
+                    if (factor.length <= maxLen) {
+                        return factor;
+                    } else {
+                        return generateExpr(maxLen - 1);
+                    }
+                } else if (rand < 0.6) {
+                    // Generate a function applied to an expression
+                    let func = getRandomElement(['sin', 'cos', 'exp']);
+                    let funcLen = func.length + 2; // Account for function name and parentheses
+                    if (funcLen >= maxLen) {
+                        return generateExpr(maxLen - 1);
+                    }
+                    let innerExpr = generateExpr(maxLen - funcLen);
+                    if (innerExpr.length === 0) return generateExpr(maxLen - 1); // Try again
+                    return func + '(' + innerExpr + ')';
+                } else {
+                    // Generate expression operator expression
+                    let operator = getRandomElement(['+', '-', '*']);
+                    let opLen = 1;
+                    if (maxLen <= opLen + 2) {
+                        // Not enough length to generate binary expression
+                        return generateExpr(maxLen - 1);
+                    }
+                    // Randomly split remaining length between left and right
+                    let minLenEachSide = 1;
+                    let remainingLen = maxLen - opLen;
+                    if (remainingLen < 2 * minLenEachSide) {
+                        return generateExpr(maxLen - 1); // Not enough length
+                    }
+                    let leftLen = Math.floor(Math.random() * (remainingLen - 2*minLenEachSide + 1)) + minLenEachSide;
+                    let rightLen = remainingLen - leftLen;
+                    if (leftLen < minLenEachSide || rightLen < minLenEachSide) {
+                        return generateExpr(maxLen - 1); // Try again
+                    }
+                    let leftExpr = generateExpr(leftLen);
+                    let rightExpr = generateExpr(rightLen);
+                    if (leftExpr.length === 0 || rightExpr.length === 0) {
+                        return generateExpr(maxLen - 1); // Try again
+                    }
+                    return leftExpr + operator + rightExpr;
+                }
+            }
+
+            let expr = '';
+            do {
+                expr = generateExpr(maxLen);
+            } while(expr.length === 0);
+
+            return expr;
+        }
+
+        function generateFactor() {
+            let rand = Math.random();
+            if (rand < 0.5) {
+                return getRandomElement(['x', 'y']);
+            } else {
+                return getRandomNumber(-10, 10).toString();
+            }
+        }
+
+        function getRandomElement(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+
+        function getRandomNumber(min, max){
+            return (Math.floor(Math.random() * (max - min + 1)) + min);
+        }
+
+        // Ensure selection can be initialized right away
+        window.onload = initSelection;
+
         function computeHarmoniticity() {
             const functionInput = document.getElementById('function-input').value;
             const xMin = parseFloat(document.getElementById('x-min').value);
@@ -237,6 +327,7 @@
     <div class="input-box">
         <label for="function-input">Enter function f(x, y): </label>
         <input type="text" id="function-input" value="x*x + y*y">
+        <button onclick="generateRandomFunction()">Generate</button>
         <br>
         <label for="x-min">x-min: </label>
         <input type="number" id="x-min" value="-2">
