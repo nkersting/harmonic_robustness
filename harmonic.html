@@ -220,7 +220,7 @@
             ctx.clearRect(0, 0, canvas.width, 30); // Clear previous text
             ctx.fillStyle = 'black';
             ctx.font = '20px Arial';
-            ctx.fillText(`Gamma: ${value}`, 10, 20);
+            ctx.fillText(`Gamma: ${value.toFixed(5)}`, 10, 20);
         }
 
         let isSelecting = false;
