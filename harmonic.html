@@ -386,23 +386,23 @@
         }
 
         function increaseCanvasSize() {
-            adjustCanvasSize(1);
+            adjustCanvasSize(1.5);
         }
 
         function decreaseCanvasSize() {
-            adjustCanvasSize(-1);
+            adjustCanvasSize(1/1.5);
         }
 
-        function adjustCanvasSize(delta) {
+        function adjustCanvasSize(lambda) {
             const xMinInput = document.getElementById('x-min');
             const xMaxInput = document.getElementById('x-max');
             const yMinInput = document.getElementById('y-min');
             const yMaxInput = document.getElementById('y-max');
 
-            xMinInput.value = parseFloat(xMinInput.value) - delta;
-            xMaxInput.value = parseFloat(xMaxInput.value) + delta;
-            yMinInput.value = parseFloat(yMinInput.value) - delta;
-            yMaxInput.value = parseFloat(yMaxInput.value) + delta;
+            xMinInput.value = parseFloat(xMinInput.value) * lambda;
+            xMaxInput.value = parseFloat(xMaxInput.value) * lambda;
+            yMinInput.value = parseFloat(yMinInput.value) * lambda;
+            yMaxInput.value = parseFloat(yMaxInput.value) * lambda;
 
             plotFunction();
         }
