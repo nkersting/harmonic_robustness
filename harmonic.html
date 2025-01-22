@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Function Plotter</title>
+    <title>Function Plotter with Interactive Controls</title>
     <style>
         body {
             display: flex;
@@ -22,14 +22,17 @@
             border: 1px solid #ccc;
         }
     </style>
-    <!-- Include the latest compatible version of Three.js -->
+    <!-- Include Three.js library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Include OrbitControls -->
+    <script src="/Users/lordkersting/Downloads/bcedf6153a33ec64ab0f7c45e4e6fb70-e559cc482f1d6dbc9eca1da789bbe40d1d0929e1/OrbitControls.js"></script>
     <script>
         function plotFunction() {
             // Clear previous scene if any
             if (window.scene) {
                 window.scene.dispose();
-                window.renderer.renderLists.dispose();
+                window.renderer.dispose();
+                window.controls.dispose();
             }
 
             const functionInput = document.getElementById('function-input').value;
@@ -46,10 +49,15 @@
             window.scene = scene; // Store scene globally to dispose later if needed
 
             const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+
             const renderer = new THREE.WebGLRenderer({ canvas: canvas });
             window.renderer = renderer; // Store renderer globally
 
             renderer.setSize(width, height);
+
+            // Initialize OrbitControls
+            const controls = new THREE.OrbitControls(camera, renderer.domElement);
+            window.controls = controls; // Store controls globally
 
             // Create grid
             const gridHelper = new THREE.GridHelper(20, 20);
@@ -131,9 +139,15 @@
             // Set camera position
             camera.position.set(30, 30, 30);
             camera.lookAt(new THREE.Vector3(0, 0, 0));
+            controls.update();
 
-            // Render the scene
-            renderer.render(scene, camera);
+            // Animate and render the scene
+            function animate() {
+                requestAnimationFrame(animate);
+                controls.update();
+                renderer.render(scene, camera);
+            }
+            animate();
         }
     </script>
 </head>
