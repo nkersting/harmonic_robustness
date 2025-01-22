@@ -61,11 +61,33 @@
 
             // Create grid
             const gridHelper = new THREE.GridHelper(20, 20);
+            gridHelper.rotation.x = Math.PI / 2;
             scene.add(gridHelper);
 
             // Create axes
             const axesHelper = new THREE.AxesHelper(10);
             scene.add(axesHelper);
+
+            function createLabel(text, position) {
+                const canvas = document.createElement('canvas');
+                canvas.width = 256; 
+                canvas.height = 128;
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = 'white';
+                ctx.font = '48px Arial';
+                ctx.fillText(text, 10, 60);
+                const texture = new THREE.Texture(canvas);
+                texture.needsUpdate = true;
+                const spriteMaterial = new THREE.SpriteMaterial({ map: texture });
+                const sprite = new THREE.Sprite(spriteMaterial);
+                sprite.scale.set(5, 2.5, 1);
+                sprite.position.copy(position);
+                return sprite;
+            }
+
+            scene.add(createLabel('X', new THREE.Vector3(11, 0, 0)));
+            scene.add(createLabel('Y', new THREE.Vector3(0, 11, 0)));
+            scene.add(createLabel('Z', new THREE.Vector3(0, 0, 11)));
 
             // Parse the function
             let f;
