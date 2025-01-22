@@ -22,154 +22,57 @@
             border: 1px solid #ccc;
         }
     </style>
-    <!-- Include Three.js library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <!-- Include OrbitControls -->
-    <script src="/Users/lordkersting/Downloads/bcedf6153a33ec64ab0f7c45e4e6fb70-e559cc482f1d6dbc9eca1da789bbe40d1d0929e1/OrbitControls.js"></script>
     <script>
         function plotFunction() {
-            // Clear previous scene if any
-            if (window.scene) {
-                window.scene.dispose();
-                window.renderer.dispose();
-                window.controls.dispose();
-            }
-
             const functionInput = document.getElementById('function-input').value;
             const xMin = parseFloat(document.getElementById('x-min').value);
             const xMax = parseFloat(document.getElementById('x-max').value);
             const yMin = parseFloat(document.getElementById('y-min').value);
             const yMax = parseFloat(document.getElementById('y-max').value);
             const canvas = document.getElementById('plot-canvas');
+            const ctx = canvas.getContext('2d');
             const width = canvas.width;
             const height = canvas.height;
+            ctx.clearRect(0, 0, width, height);
 
-            // Initialize Three.js
-            const scene = new THREE.Scene();
-            window.scene = scene; // Store scene globally to dispose later if needed
-
-            const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-
-            const renderer = new THREE.WebGLRenderer({ canvas: canvas });
-            window.renderer = renderer; // Store renderer globally
-
-            renderer.setSize(width, height);
-
-            // Initialize OrbitControls
-            const controls = new THREE.OrbitControls(camera, renderer.domElement);
-            window.controls = controls; // Store controls globally
-
-            // Create grid
-            const gridHelper = new THREE.GridHelper(20, 20);
-            gridHelper.rotation.x = Math.PI / 2;
-            scene.add(gridHelper);
-
-            // Create axes
-            const axesHelper = new THREE.AxesHelper(10);
-            scene.add(axesHelper);
-
-            function createLabel(text, position) {
-                const canvas = document.createElement('canvas');
-                canvas.width = 256; 
-                canvas.height = 128;
-                const ctx = canvas.getContext('2d');
-                ctx.fillStyle = 'white';
-                ctx.font = '48px Arial';
-                ctx.fillText(text, 10, 60);
-                const texture = new THREE.Texture(canvas);
-                texture.needsUpdate = true;
-                const spriteMaterial = new THREE.SpriteMaterial({ map: texture });
-                const sprite = new THREE.Sprite(spriteMaterial);
-                sprite.scale.set(5, 2.5, 1);
-                sprite.position.copy(position);
-                return sprite;
-            }
-
-            scene.add(createLabel('X', new THREE.Vector3(11, 0, 0)));
-            scene.add(createLabel('Y', new THREE.Vector3(0, 11, 0)));
-            scene.add(createLabel('Z', new THREE.Vector3(0, 0, 11)));
-
-            // Parse the function
             let f;
             try {
                 f = new Function('x', 'y', `with(Math){ return ${functionInput} }`);
-                // Test the function with sample input
-                f(0, 0);
+                f(0, 0); // Test
             } catch (error) {
-                alert('Invalid function input. Please correct your function.');
+                alert('Invalid function input.');
                 return;
             }
 
-            // Create geometry using BufferGeometry
-            const geometry = new THREE.BufferGeometry();
-
-            // Parameters for the grid
-            const xSegments = 100; // Increase for higher resolution
-            const ySegments = 100;
-            const xRange = xMax - xMin;
-            const yRange = yMax - yMin;
-            const xStep = xRange / xSegments;
-            const yStep = yRange / ySegments;
-
-            // Arrays to hold vertex positions and indices
-            const positions = [];
-            const indices = [];
-
-            // Generate vertices
-            for (let i = 0; i <= xSegments; i++) {
-                const x = xMin + i * xStep;
-                for (let j = 0; j <= ySegments; j++) {
-                    const y = yMin + j * yStep;
-                    let z;
-                    try {
-                        z = f(x, y);
-                        if (!isFinite(z)) z = 0;
-                    } catch (error) {
-                        z = 0;
-                    }
-                    positions.push(x, y, z);
+            // Determine z-min and z-max
+            let zMin = Infinity, zMax = -Infinity;
+            for (let px = 0; px < width; px++) {
+                const x = xMin + (xMax - xMin) * px / width;
+                for (let py = 0; py < height; py++) {
+                    const y = yMin + (yMax - yMin) * (height - py) / height;
+                    const z = f(x, y);
+                    if (z < zMin) zMin = z;
+                    if (z > zMax) zMax = z;
                 }
             }
 
-            // Generate indices (faces)
-            for (let i = 0; i < xSegments; i++) {
-                for (let j = 0; j < ySegments; j++) {
-                    const a = i * (ySegments + 1) + j;
-                    const b = (i + 1) * (ySegments + 1) + j;
-                    const c = (i + 1) * (ySegments + 1) + (j + 1);
-                    const d = i * (ySegments + 1) + (j + 1);
-
-                    // First triangle
-                    indices.push(a, b, d);
-                    // Second triangle
-                    indices.push(b, c, d);
+            const imageData = ctx.createImageData(width, height);
+            const data = imageData.data;
+            for (let px = 0; px < width; px++) {
+                const x = xMin + (xMax - xMin) * px / width;
+                for (let py = 0; py < height; py++) {
+                    const y = yMin + (yMax - yMin) * (height - py) / height;
+                    const z = f(x, y);
+                    const ratio = (z - zMin) / (zMax - zMin || 1);
+                    const color = Math.floor(255 * ratio);
+                    const index = 4 * (py * width + px);
+                    data[index + 0] = color; // R
+                    data[index + 1] = 0;     // G
+                    data[index + 2] = 255 - color; // B
+                    data[index + 3] = 255;   // A
                 }
             }
-
-            // Set the attributes and indices for the geometry
-            geometry.setIndex(indices);
-            geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-            geometry.computeVertexNormals();
-
-            // Create material
-            const material = new THREE.MeshNormalMaterial({ side: THREE.DoubleSide });
-
-            // Create mesh and add to scene
-            const mesh = new THREE.Mesh(geometry, material);
-            scene.add(mesh);
-
-            // Set camera position
-            camera.position.set(30, 30, 30);
-            camera.lookAt(new THREE.Vector3(0, 0, 0));
-            controls.update();
-
-            // Animate and render the scene
-            function animate() {
-                requestAnimationFrame(animate);
-                controls.update();
-                renderer.render(scene, camera);
-            }
-            animate();
+            ctx.putImageData(imageData, 0, 0);
         }
 
         function computeHarmoniticity() {
