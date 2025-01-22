@@ -92,7 +92,7 @@
             // Parse the function
             let f;
             try {
-                f = new Function('x', 'y', `return ${functionInput}`);
+                f = new Function('x', 'y', `with(Math){ return ${functionInput} }`);
                 // Test the function with sample input
                 f(0, 0);
             } catch (error) {
