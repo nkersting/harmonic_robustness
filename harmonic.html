@@ -21,6 +21,15 @@
         canvas {
             border: 1px solid #ccc;
         }
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px;
+            border-radius: 3px;
+            pointer-events: none;
+            display: none;
+        }
     </style>
     <script>
         function plotFunction() {
@@ -58,6 +67,7 @@
 
             const imageData = ctx.createImageData(width, height);
             const data = imageData.data;
+
             for (let px = 0; px < width; px++) {
                 const x = xMin + (xMax - xMin) * px / width;
                 for (let py = 0; py < height; py++) {
@@ -343,12 +353,35 @@
 
         // Ensure selection can be initialized right away
         window.onload = initSelection;
+
+        function showTooltip(event) {
+            const canvas = document.getElementById('plot-canvas');
+            const tooltip = document.getElementById('tooltip');
+            const rect = canvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            const xMin = parseFloat(document.getElementById('x-min').value);
+            const xMax = parseFloat(document.getElementById('x-max').value);
+            const yMin = parseFloat(document.getElementById('y-min').value);
+            const yMax = parseFloat(document.getElementById('y-max').value);
+            const xCoord = xMin + (xMax - xMin) * x / canvas.width;
+            const yCoord = yMin + (yMax - yMin) * (canvas.height - y) / canvas.height;
+            tooltip.style.left = `${event.clientX + 10}px`;
+            tooltip.style.top = `${event.clientY + 10}px`;
+            tooltip.innerHTML = `(${xCoord.toFixed(2)}, ${yCoord.toFixed(2)})`;
+            tooltip.style.display = 'block';
+        }
+
+        function hideTooltip() {
+            const tooltip = document.getElementById('tooltip');
+            tooltip.style.display = 'none';
+        }
     </script>
 </head>
 <body>
     <div class="input-box">
         <label for="function-input">Enter function f(x, y): </label>
-        <input type="text" id="function-input" value="x*x + y*y">
+        <input type="text" id="function-input" value="x*y">
         <button onclick="generateRandomFunction()">Generate</button>
         <br>
         <label for="x-min">x-min: </label>
@@ -363,6 +396,7 @@
         <br>
         <button onclick="plotFunction()">Plot</button>
     </div>
-    <canvas id="plot-canvas" width="800" height="600"></canvas>
+    <canvas id="plot-canvas" width="800" height="600" onmousemove="showTooltip(event)" onmouseout="hideTooltip()"></canvas>
+    <div id="tooltip" class="tooltip"></div>
 </body>
 </html>
