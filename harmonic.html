@@ -123,6 +123,105 @@
             const harmoniticity = sumDiff / count;
             alert(`Harmoniticity: ${harmoniticity}`);
         }
+
+        let isSelecting = false;
+        let selectionStart = { x: 0, y: 0 };
+        let selectionEnd = { x: 0, y: 0 };
+
+        function initSelection() {
+            const canvas = document.getElementById('plot-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.addEventListener('mousedown', (e) => {
+                isSelecting = true;
+                selectionStart.x = e.offsetX;
+                selectionStart.y = e.offsetY;
+            });
+            canvas.addEventListener('mousemove', (e) => {
+                if (!isSelecting) return;
+                selectionEnd.x = e.offsetX;
+                selectionEnd.y = e.offsetY;
+                // Redraw selection overlay
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                plotFunction(); // Re-draw heatmap under the overlay
+                ctx.strokeStyle = 'yellow';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(
+                    selectionStart.x,
+                    selectionStart.y,
+                    selectionEnd.x - selectionStart.x,
+                    selectionEnd.y - selectionStart.y
+                );
+            });
+            canvas.addEventListener('mouseup', () => {
+                isSelecting = false;
+                computeHarmoniticityInRegion();
+            });
+        }
+
+        function computeHarmoniticityInRegion() {
+            const canvas = document.getElementById('plot-canvas');
+            const width = canvas.width, height = canvas.height;
+            const xMin = parseFloat(document.getElementById('x-min').value);
+            const xMax = parseFloat(document.getElementById('x-max').value);
+            const yMin = parseFloat(document.getElementById('y-min').value);
+            const yMax = parseFloat(document.getElementById('y-max').value);
+
+            // Convert selection to (x,y) limits
+            const left = Math.min(selectionStart.x, selectionEnd.x);
+            const right = Math.max(selectionStart.x, selectionEnd.x);
+            const top = Math.min(selectionStart.y, selectionEnd.y);
+            const bottom = Math.max(selectionStart.y, selectionEnd.y);
+
+            const selXMin = xMin + (xMax - xMin) * left / width;
+            const selXMax = xMin + (xMax - xMin) * right / width;
+            const selYMax = yMin + (yMax - yMin) * (height - top) / height;
+            const selYMin = yMin + (yMax - yMin) * (height - bottom) / height;
+
+            // Reuse existing function logic
+            const functionInput = document.getElementById('function-input').value;
+            let f;
+            try {
+                f = new Function('x', 'y', `with(Math){ return ${functionInput} }`);
+                f(0, 0);
+            } catch(e) {
+                alert('Invalid function input.');
+                return;
+            }
+
+            const steps = 20;
+            const dx = (selXMax - selXMin) / steps;
+            const dy = (selYMax - selYMin) / steps;
+            const values = [];
+            for (let i = 0; i <= steps; i++) {
+                const row = [];
+                const xx = selXMin + i * dx;
+                for (let j = 0; j <= steps; j++) {
+                    const yy = selYMin + j * dy;
+                    row.push(f(xx, yy));
+                }
+                values.push(row);
+            }
+            let sumDiff = 0, count = 0;
+            for (let i = 1; i < steps; i++) {
+                for (let j = 1; j < steps; j++) {
+                    const val = values[i][j];
+                    let neighborSum = 0;
+                    for (let di = -1; di <= 1; di++) {
+                        for (let dj = -1; dj <= 1; dj++) {
+                            if (!(di === 0 && dj === 0)) {
+                                neighborSum += values[i + di][j + dj];
+                            }
+                        }
+                    }
+                    sumDiff += (val - neighborSum / 8);
+                    count++;
+                }
+            }
+            alert(`Harmoniticity in selection: ${sumDiff / count || 0}`);
+        }
+
+        // Ensure selection can be initialized right away
+        window.onload = initSelection;
     </script>
 </head>
 <body>
