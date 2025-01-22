@@ -252,7 +252,7 @@
             ctx.clearRect(0, 0, canvas.width, 30); // Clear previous text
             ctx.fillStyle = 'black';
             ctx.font = '20px Arial';
-            ctx.fillText(`Gamma: ${value.toFixed(5)}`, 10, 20);
+            ctx.fillText(`Gamma: ${(1000*value).toFixed(5)}`, 10, 20);
         }
 
         let isSelecting = false;
@@ -381,20 +381,19 @@
 <body>
     <div class="input-box">
         <label for="function-input">Enter function f(x, y): </label>
-        <input type="text" id="function-input" value="x*y">
+        <input type="text" id="function-input" value="sin(sin(exp(x*y)))">
+        <button onclick="plotFunction()">Plot</button>
         <button onclick="generateRandomFunction()">Generate</button>
         <br>
         <label for="x-min">x-min: </label>
-        <input type="number" id="x-min" value="-5">
+        <input type="number" id="x-min" value="-1">
         <label for="x-max">x-max: </label>
-        <input type="number" id="x-max" value="5">
+        <input type="number" id="x-max" value="1">
         <br>
         <label for="y-min">y-min: </label>
-        <input type="number" id="y-min" value="-5">
+        <input type="number" id="y-min" value="-1">
         <label for="y-max">y-max: </label>
-        <input type="number" id="y-max" value="5">
-        <br>
-        <button onclick="plotFunction()">Plot</button>
+        <input type="number" id="y-max" value="1">
     </div>
     <canvas id="plot-canvas" width="800" height="600" onmousemove="showTooltip(event)" onmouseout="hideTooltip()"></canvas>
     <div id="tooltip" class="tooltip"></div>
