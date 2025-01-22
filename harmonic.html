@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Function Plotter</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #f0f0f0, #c0c0c0);
+        }
+        .input-box {
+            margin-bottom: 20px;
+        }
+        canvas {
+            border: 1px solid #ccc;
+        }
+    </style>
+    <!-- Include the latest compatible version of Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        function plotFunction() {
+            // Clear previous scene if any
+            if (window.scene) {
+                window.scene.dispose();
+                window.renderer.renderLists.dispose();
+            }
+
+            const functionInput = document.getElementById('function-input').value;
+            const xMin = parseFloat(document.getElementById('x-min').value);
+            const xMax = parseFloat(document.getElementById('x-max').value);
+            const yMin = parseFloat(document.getElementById('y-min').value);
+            const yMax = parseFloat(document.getElementById('y-max').value);
+            const canvas = document.getElementById('plot-canvas');
+            const width = canvas.width;
+            const height = canvas.height;
+
+            // Initialize Three.js
+            const scene = new THREE.Scene();
+            window.scene = scene; // Store scene globally to dispose later if needed
+
+            const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas: canvas });
+            window.renderer = renderer; // Store renderer globally
+
+            renderer.setSize(width, height);
+
+            // Create grid
+            const gridHelper = new THREE.GridHelper(20, 20);
+            scene.add(gridHelper);
+
+            // Create axes
+            const axesHelper = new THREE.AxesHelper(10);
+            scene.add(axesHelper);
+
+            // Parse the function
+            let f;
+            try {
+                f = new Function('x', 'y', `return ${functionInput}`);
+                // Test the function with sample input
+                f(0, 0);
+            } catch (error) {
+                alert('Invalid function input. Please correct your function.');
+                return;
+            }
+
+            // Create geometry using BufferGeometry
+            const geometry = new THREE.BufferGeometry();
+
+            // Parameters for the grid
+            const xSegments = 100; // Increase for higher resolution
+            const ySegments = 100;
+            const xRange = xMax - xMin;
+            const yRange = yMax - yMin;
+            const xStep = xRange / xSegments;
+            const yStep = yRange / ySegments;
+
+            // Arrays to hold vertex positions and indices
+            const positions = [];
+            const indices = [];
+
+            // Generate vertices
+            for (let i = 0; i <= xSegments; i++) {
+                const x = xMin + i * xStep;
+                for (let j = 0; j <= ySegments; j++) {
+                    const y = yMin + j * yStep;
+                    let z;
+                    try {
+                        z = f(x, y);
+                        if (!isFinite(z)) z = 0;
+                    } catch (error) {
+                        z = 0;
+                    }
+                    positions.push(x, y, z);
+                }
+            }
+
+            // Generate indices (faces)
+            for (let i = 0; i < xSegments; i++) {
+                for (let j = 0; j < ySegments; j++) {
+                    const a = i * (ySegments + 1) + j;
+                    const b = (i + 1) * (ySegments + 1) + j;
+                    const c = (i + 1) * (ySegments + 1) + (j + 1);
+                    const d = i * (ySegments + 1) + (j + 1);
+
+                    // First triangle
+                    indices.push(a, b, d);
+                    // Second triangle
+                    indices.push(b, c, d);
+                }
+            }
+
+            // Set the attributes and indices for the geometry
+            geometry.setIndex(indices);
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+            geometry.computeVertexNormals();
+
+            // Create material
+            const material = new THREE.MeshNormalMaterial({ side: THREE.DoubleSide });
+
+            // Create mesh and add to scene
+            const mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+
+            // Set camera position
+            camera.position.set(30, 30, 30);
+            camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+            // Render the scene
+            renderer.render(scene, camera);
+        }
+    </script>
+</head>
+<body>
+    <div class="input-box">
+        <label for="function-input">Enter function f(x, y): </label>
+        <input type="text" id="function-input" value="x*x + y*y">
+        <br>
+        <label for="x-min">x-min: </label>
+        <input type="number" id="x-min" value="-10">
+        <label for="x-max">x-max: </label>
+        <input type="number" id="x-max" value="10">
+        <br>
+        <label for="y-min">y-min: </label>
+        <input type="number" id="y-min" value="-10">
+        <label for="y-max">y-max: </label>
+        <input type="number" id="y-max" value="10">
+        <br>
+        <button onclick="plotFunction()">Plot</button>
+    </div>
+    <canvas id="plot-canvas" width="800" height="600"></canvas>
+</body>
+</html>
