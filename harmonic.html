@@ -73,6 +73,17 @@
                 }
             }
             ctx.putImageData(imageData, 0, 0);
+
+            // Draw x=0 and y=0 axes
+            ctx.beginPath();
+            ctx.moveTo(width / 2, 0);
+            ctx.lineTo(width / 2, height);
+            ctx.moveTo(0, height / 2);
+            ctx.lineTo(width, height / 2);
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
         }
 
         function generateRandomFunction() {
@@ -330,14 +341,14 @@
         <button onclick="generateRandomFunction()">Generate</button>
         <br>
         <label for="x-min">x-min: </label>
-        <input type="number" id="x-min" value="-2">
+        <input type="number" id="x-min" value="-5">
         <label for="x-max">x-max: </label>
-        <input type="number" id="x-max" value="2">
+        <input type="number" id="x-max" value="5">
         <br>
         <label for="y-min">y-min: </label>
-        <input type="number" id="y-min" value="-2">
+        <input type="number" id="y-min" value="-5">
         <label for="y-max">y-max: </label>
-        <input type="number" id="y-max" value="2">
+        <input type="number" id="y-max" value="5">
         <br>
         <button onclick="plotFunction()">Plot</button>
     </div>
