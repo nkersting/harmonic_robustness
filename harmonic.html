@@ -30,6 +30,14 @@
             pointer-events: none;
             display: none;
         }
+        .canvas-controls {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .canvas-controls button {
+            margin: 0 5px;
+        }
     </style>
     <script>
         function plotFunction() {
@@ -376,6 +384,28 @@
             const tooltip = document.getElementById('tooltip');
             tooltip.style.display = 'none';
         }
+
+        function increaseCanvasSize() {
+            adjustCanvasSize(1);
+        }
+
+        function decreaseCanvasSize() {
+            adjustCanvasSize(-1);
+        }
+
+        function adjustCanvasSize(delta) {
+            const xMinInput = document.getElementById('x-min');
+            const xMaxInput = document.getElementById('x-max');
+            const yMinInput = document.getElementById('y-min');
+            const yMaxInput = document.getElementById('y-max');
+
+            xMinInput.value = parseFloat(xMinInput.value) - delta;
+            xMaxInput.value = parseFloat(xMaxInput.value) + delta;
+            yMinInput.value = parseFloat(yMinInput.value) - delta;
+            yMaxInput.value = parseFloat(yMaxInput.value) + delta;
+
+            plotFunction();
+        }
     </script>
 </head>
 <body>
@@ -394,8 +424,13 @@
         <input type="number" id="y-min" value="-1">
         <label for="y-max">y-max: </label>
         <input type="number" id="y-max" value="1">
+        <br>
     </div>
     <canvas id="plot-canvas" width="800" height="600" onmousemove="showTooltip(event)" onmouseout="hideTooltip()"></canvas>
+    <div class="canvas-controls">
+        <button onclick="increaseCanvasSize()">+</button>
+        <button onclick="decreaseCanvasSize()">-</button>
+    </div>
     <div id="tooltip" class="tooltip"></div>
 </body>
 </html>
