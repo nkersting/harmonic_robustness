@@ -128,26 +128,26 @@
             <br><br>
             <label for="model">Select Model:</label><br>
             <div class="radio-group">
-                <input type="radio" id="gpt-4o" name="model" value="gpt-4o-2024-11-20">
-                <label for="gpt-4o">GPT-4o</label>
+            <input type="radio" id="gpt-4o" name="model" value="gpt-4o-2024-11-20" checked>
+            <label for="gpt-4o">GPT-4o</label>
             </div>
             <div class="radio-group">
-                <input type="radio" id="gpt-4o-mini" name="model" value="gpt-4o-mini-2024-07-18">
-                <label for="gpt-4o-mini">GPT-4o-mini</label>
+            <input type="radio" id="gpt-4o-mini" name="model" value="gpt-4o-mini-2024-07-18">
+            <label for="gpt-4o-mini">GPT-4o-mini</label>
             </div>
             <div class="radio-group">
-                <input type="radio" id="claude-sonnet" name="model" value="claude-3-5-sonnet-20241022">
-                <label for="claude-sonnet">Claude-Sonnet</label>
+            <input type="radio" id="claude-sonnet" name="model" value="claude-3-5-sonnet-20241022">
+            <label for="claude-sonnet">Claude-Sonnet</label>
             </div>
             <div class="radio-group">
-                <input type="radio" id="claude-haiku" name="model" value="claude-3-haiku-20240307">
-                <label for="claude-haiku">Claude-Haiku</label>
+            <input type="radio" id="claude-haiku" name="model" value="claude-3-haiku-20240307">
+            <label for="claude-haiku">Claude-Haiku</label>
             </div>
             <br>
             <label for="n-value">Number of Variants (N):</label>
             <div class="slider-container">
-                <span class="slider-value" id="slider-value">10</span>
-                <input type="range" id="n-value" name="n-value" min="1" max="20" value="10" list="tickmarks" oninput="document.getElementById('slider-value').innerText = this.value">
+            <span class="slider-value" id="slider-value">10</span>
+            <input type="range" id="n-value" name="n-value" min="1" max="20" value="10" list="tickmarks" oninput="document.getElementById('slider-value').innerText = this.value">
             </div>
             <datalist id="tickmarks">
                 <option value="1" label="1"></option>
