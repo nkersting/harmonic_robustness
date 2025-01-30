@@ -17,7 +17,7 @@ N = int(form.getvalue("n-value"))
 tester = None
 if "claude" in model:
     tester = ClaudeTester(model, radius=N, ord_limit=31, ord_size=3, temperature=0)
-elif "gpt-4" in model:
+elif "gpt-4" in model or 'o1' in model:
     tester = GPT4Tester(model, radius=N, ord_limit=31, ord_size=3, temperature=0)
 
 if tester is not None:
