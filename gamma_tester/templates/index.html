@@ -94,6 +94,16 @@
             event.preventDefault();
             const form = document.getElementById('queryForm');
             const formData = new FormData(form);
+            const numVariants = parseInt(document.getElementById('numVariants').value);
+            const countdownTime = numVariants * 15;
+            const button = event.target.querySelector('button[type="submit"]');
+            button.disabled = true;
+
+            for (let i = countdownTime; i > 0; i--) {
+                button.textContent = `Running... (${i}s)`;
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+
             const response = await fetch('/process_query', {
                 method: 'POST',
                 body: formData
@@ -164,9 +174,8 @@ result.queries.forEach((query, index) => {
                         <textarea id="query" name="query" rows="4" required></textarea>
                     </div>
                     <div class="input-group">
-                        <label for="numVariants">Number of Variants (N):</label>
-                        <input type="range" id="numVariants" name="numVariants" min="1" max="100" value="5" oninput="document.getElementById('numVariantsValue').textContent = this.value">
-                        <span id="numVariantsValue">5</span>
+                        <label for="numVariants">Number of Variants (N): <span id="numVariantsValue">3</span></label>
+                        <input type="range" id="numVariants" name="numVariants" min="1" max="100" value="3" oninput="document.getElementById('numVariantsValue').textContent = this.value">
                     </div>
                     <button type="submit">Run Query</button>
                 </form>
