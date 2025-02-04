@@ -51,9 +51,6 @@
             border-radius: 4px;
             cursor: pointer;
         }
-        button:hover {
-            background-color: #0056b3;
-        }
     </style>
 </head>
 <body>
@@ -93,7 +90,7 @@
                         <label for="query">Query:</label>
                         <textarea id="query" name="query" rows="4" required></textarea>
                     </div>
-                    <div class="input-group"></div>
+                    <div class="input-group">
                         <label for="numVariants">Number of Variants (N):</label>
                         <input type="range" id="numVariants" name="numVariants" min="1" max="100" value="5" oninput="document.getElementById('numVariantsValue').textContent = this.value">
                         <span id="numVariantsValue">5</span>
