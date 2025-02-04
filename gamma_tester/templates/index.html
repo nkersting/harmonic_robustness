@@ -51,6 +51,12 @@
             border-radius: 4px;
             cursor: pointer;
         }
+        #outputText {
+            border: 2px solid electricgreen;
+            padding: 10px;
+            color: electricgreen;
+            font-weight: bold;
+        }
     </style>
     <script>
         async function submitForm(event) {
@@ -58,12 +64,14 @@
             const form = document.getElementById('queryForm');
             const formData = new FormData(form);
             const response = await fetch('/process_query', {
-                method: 'POST',
-                body: formData
+            method: 'POST',
+            body: formData
             });
-            const result = await response.text();
-            document.getElementById('outputText').textContent = result;
+            const result = await response.json();
+            const gammaValue = result.gamma.toFixed(3);
+            document.getElementById('outputText').textContent = `Gamma: ${gammaValue}`;
         }
+        
     </script>
 </head>
 <body>
