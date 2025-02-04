@@ -103,9 +103,9 @@
 
             // Populate accordion with queries and outputs
             const accordionContent = document.getElementById('accordionContent');
-            accordionContent.innerHTML = '<table><tr><th>Query</th><th>Output</th></tr>';
+            accordionContent.innerHTML = '<table><tr><th style="width: 50%;">Query</th><th style="width: 50%;">Output</th></tr>';
             result.queries.forEach((query, index) => {
-                accordionContent.innerHTML += `<tr><td>${query}</td><td>${result.outputs[index]}</td></tr>`;
+                accordionContent.innerHTML += `<tr><td style="border: 1px solid #ddd; padding: 8px; width: 50%;">${query}</td><td style="border: 1px solid #ddd; padding: 8px; width: 50%;">${result.outputs[index]}</td></tr>`;
             });
             accordionContent.innerHTML += '</table>';
         }
