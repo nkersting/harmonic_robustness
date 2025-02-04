@@ -52,6 +52,19 @@
             cursor: pointer;
         }
     </style>
+    <script>
+        async function submitForm(event) {
+            event.preventDefault();
+            const form = document.getElementById('queryForm');
+            const formData = new FormData(form);
+            const response = await fetch('/process_query', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.text();
+            document.getElementById('outputText').textContent = result;
+        }
+    </script>
 </head>
 <body>
     <div class="container">
@@ -70,7 +83,7 @@
                 <p>5. Click the "Submit" button to measure hallucination liklihood, where results appear in the right panel.</p>
             </div>
             <div>
-                <form id="queryForm" method="POST" action="/process_query">
+                <form id="queryForm" method="POST" onsubmit="submitForm(event)">
                     <div class="radio-group">
                         <label>Select Model:</label>
                         <label><input type="radio" name="model" value="GPT4o" checked> GPT-4o</label>

@@ -20,16 +20,10 @@ def process_query():
     # For demonstration, we will return a mock response
     
     response = {
-        "original_query": query,
-        "model": model,
-        "api_key": api_key,
-        "output": "This is a mock response from the model.",
-        "perturbed_outputs": [
-            "Mock response 1",
-            "Mock response 2",
-            "Mock response 3"
-        ],
-        "hallucination_metric": 0.5
+        "gamma": 0,
+        "answer": "",
+        "queries": [],
+        "outputs": []
     }
     
     return jsonify(response)
