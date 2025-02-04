@@ -19,12 +19,14 @@
             justify-content: space-between;
         }
         .panel > div {
-            flex: 1;
+            width: 30%; /* Fixed width for each panel */
             padding: 30px; /* Increased padding */
             border: 1px solid #ccc;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             margin: 10px;
+            overflow-y: auto; /* Add vertical scrollbar if content overflows */
+            max-height: 600px; /* Set a maximum height */
         }
         .radio-group, .input-group {
             margin-bottom: 20px; /* Increased margin */
@@ -120,10 +122,8 @@
                     <button type="submit">Run Query</button>
                 </form>
             </div>
-            <div>
-                <h2>Output</h2>
-                <div id="output">
-                    <pre id="outputText"></pre>
+                <div class="panel" id="output">
+                    <pre id="outputText" style="white-space: pre-wrap; overflow-x: hidden;"></pre>
                 </div>
             </div>
         </div>
