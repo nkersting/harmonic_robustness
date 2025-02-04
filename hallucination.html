@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gamma Hallucination Metric for LLMs</title>
+    <title>Hallucination Metric</title>
     <style>
         body {
             display: flex;
@@ -109,6 +109,19 @@
             font-size: 18px;
             font-weight: bold;
         }
+        /* New CSS rule for the banner */
+        .banner {
+            background-color: orange;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
     </style>
     <script>
         function showSpinner() {
@@ -118,6 +131,9 @@
     </script>
 </head>
 <body>
+    <div class="banner">
+        Due to high volume of requests, we're taking the Hallucination Metric offline; you can still run it on your own machine by following instructions in the <a href="https://github.com/nkersting/harmonic_robustness">public repo</a>
+    </div>
     <div class="title-box">
         <h1>Gamma Hallucination Metric for LLMs</h1>
     </div>
