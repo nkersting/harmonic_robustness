@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM Hallucination Tester</title>
+    <style>
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .title-panel {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .panel {
+            display: flex;
+            justify-content: space-between;
+        }
+        .panel > div {
+            flex: 1;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+        }
+        .radio-group, .input-group {
+            margin-bottom: 15px;
+        }
+        .radio-group label, .input-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .radio-group input, .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title-panel">
+            <h1>LLM Hallucination Tester</h1>
+        </div>
+        <div class="panel">
+            <div>
+                <h2>Explanatory Text</h2>
+                <p>This tool allows you to test various LLM queries and measure the hallucination likelihood. Select a model, enter the required API keys, and input your query to get started.</p>
+                <p>The output will include the model's response, outputs of several perturbed versions of the query, and a metric value indicating hallucination.</p>
+            </div>
+            <div>
+                <form id="queryForm" method="POST" action="/process_query">
+                    <div class="radio-group">
+                        <label>Select Model:</label>
+                        <label><input type="radio" name="model" value="GPT4o" checked> GPT-4o</label>
+                        <label><input type="radio" name="model" value="GPT4o-mini"> GPT-4o-mini</label>
+                        <label><input type="radio" name="model" value="Claude-Sonnet"> Claude-Sonnet</label>
+                        <label><input type="radio" name="model" value="Claude-Haiku"> Claude-Haiku</label>
+                    </div>
+                    <div class="input-group">
+                        <label for="openaiapiKey">OPENAI API Key (req):</label>
+                        <input type="text" id="openaiapiKey" name="openaiapiKey" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="anthropicapiKey">ANTHROPIC API Key:</label>
+                        <input type="text" id="anthropicapiKey" name="anthropicapiKey">
+                    </div>
+                    <div class="input-group">
+                        <label for="query">Query:</label>
+                        <textarea id="query" name="query" rows="4" required></textarea>
+                    </div>
+                    <button type="submit">Run Query</button>
+                </form>
+            </div>
+            <div>
+                <h2>Output</h2>
+                <div id="output">
+                    <pre id="outputText"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
