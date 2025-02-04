@@ -59,6 +59,33 @@
             color: electricgreen;
             font-weight: bold;
         }
+        .accordion {
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 15px;
+            transition: 0.4s;
+        }
+        .accordion-content {
+            padding: 0 18px;
+            display: none;
+            overflow: hidden;
+            background-color: #f1f1f1;
+        }
+        .accordion-content table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .accordion-content th, .accordion-content td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        .accordion-content th {
+            background-color: #f2f2f2;
+        }
     </style>
     <script>
         async function submitForm(event) {
@@ -73,6 +100,23 @@
             const gammaValue = result.gamma.toFixed(3);
             const centralAnswer = result.answer;
             document.getElementById('outputText').textContent = `Gamma: ${gammaValue}\n\nCentral Answer: ${centralAnswer}`;
+
+            // Populate accordion with queries and outputs
+            const accordionContent = document.getElementById('accordionContent');
+            accordionContent.innerHTML = '<table><tr><th>Query</th><th>Output</th></tr>';
+            result.queries.forEach((query, index) => {
+                accordionContent.innerHTML += `<tr><td>${query}</td><td>${result.outputs[index]}</td></tr>`;
+            });
+            accordionContent.innerHTML += '</table>';
+        }
+
+        function toggleAccordion() {
+            const content = document.getElementById('accordionContent');
+            if (content.style.display === "block") {
+                content.style.display = "none";
+            } else {
+                content.style.display = "block";
+            }
         }
     </script>
 </head>
@@ -122,8 +166,12 @@
                     <button type="submit">Run Query</button>
                 </form>
             </div>
-                <div class="panel" id="output">
+            <div>
+                <h2>Output</h2>
+                <div id="output">
                     <pre id="outputText" style="white-space: pre-wrap; overflow-x: hidden;"></pre>
+                    <button class="accordion" onclick="toggleAccordion()">Show Queries and Outputs</button>
+                    <div class="accordion-content" id="accordionContent"></div>
                 </div>
             </div>
         </div>
