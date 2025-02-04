@@ -80,11 +80,11 @@
                     </div>
                     <div class="input-group">
                         <label for="openaiapiKey">OPENAI API Key (req):</label>
-                        <input type="text" id="openaiapiKey" name="openaiapiKey" required>
+                        <input type="text" id="openaiapiKey" name="openaiapiKey" value="Bearer xxx..." style="color: grey;" onfocus="if(this.value=='Bearer xxx...'){this.value=''; this.style.color='black';}" onblur="if(this.value==''){this.value='Bearer xxx...'; this.style.color='grey';}" required>
                     </div>
                     <div class="input-group">
                         <label for="anthropicapiKey">ANTHROPIC API Key:</label>
-                        <input type="text" id="anthropicapiKey" name="anthropicapiKey">
+                        <input type="text" id="anthropicapiKey" name="anthropicapiKey" value="sk-ant-...." style="color: grey;" onfocus="if(this.value=='sk-ant-....'){this.value=''; this.style.color='black';}" onblur="if(this.value==''){this.value='sk-ant-....'; this.style.color='grey';}">
                     </div>
                     <div class="input-group">
                         <label for="query">Query:</label>
