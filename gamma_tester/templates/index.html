@@ -105,10 +105,12 @@
 
             // Populate accordion with queries and outputs
             const accordionContent = document.getElementById('accordionContent');
-            let tableContent = '<table><tr><th style="width: 50%;">Query</th><th style="width: 50%;">Output</th></tr>';
-            result.queries.forEach((query, index) => {
-                tableContent += `<tr><td style="border: 1px solid #ddd; padding: 8px; width: 50%;">${query}</td><td style="border: 1px solid #ddd; padding: 8px; width: 50%;">${result.outputs[index]}</td></tr>`;
-            });
+            let tableContent = '<table><tr><th style="width: 50%;">Perturbed Query</th><th style="width: 50%;">Output</th></tr>';
+result.queries.forEach((query, index) => {
+    const formattedQuery = query.replace(/[\x01-\x1F\x7F]/g, char => `<span style="color: red;">x${char.charCodeAt(0).toString(16).padStart(2, '0')}</span>`);
+    const formattedOutput = result.outputs[index].replace(/[\x01-\x1F\x7F]/g, char => `<span style="color: red;">x${char.charCodeAt(0).toString(16).padStart(2, '0')}</span>`);
+    tableContent += `<tr><td style="border: 1px solid #ddd; padding: 8px; width: 50%;">${formattedQuery}</td><td style="border: 1px solid #ddd; padding: 8px; width: 50%;">${formattedOutput}</td></tr>`;
+});
             tableContent += '</table>';
             accordionContent.innerHTML = tableContent;
         }
