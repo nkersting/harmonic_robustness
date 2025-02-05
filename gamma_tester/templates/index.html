@@ -26,7 +26,7 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             margin: 10px;
             overflow-y: auto; /* Add vertical scrollbar if content overflows */
-            max-height: 600px; /* Set a maximum height */
+            max-height: 660px; /* Increased maximum height by 10% */
         }
         .radio-group, .input-group {
             margin-bottom: 20px; /* Increased margin */
@@ -100,13 +100,13 @@
             button.disabled = true;
 
             for (let i = countdownTime; i > 0; i--) {
-                button.textContent = `Running... (${i}s)`;
-                await new Promise(resolve => setTimeout(resolve, 1000));
+            button.textContent = `Running... (${i}s)`;
+            await new Promise(resolve => setTimeout(resolve, 1000));
             }
 
             const response = await fetch('/process_query', {
-                method: 'POST',
-                body: formData
+            method: 'POST',
+            body: formData
             });
             const result = await response.json();
             const gammaValue = result.gamma.toFixed(3);
@@ -116,14 +116,19 @@
             // Populate accordion with queries and outputs
             const accordionContent = document.getElementById('accordionContent');
             let tableContent = '<table><tr><th style="width: 50%;">Perturbed Query</th><th style="width: 50%;">Output</th></tr>';
-result.queries.forEach((query, index) => {
-    const formattedQuery = query.replace(/[\x01-\x1F\x7F]/g, char => `<span style="color: red;"> x${char.charCodeAt(0).toString(16).padStart(2, '0')}</span>`);
-    const formattedOutput = result.outputs[index].replace(/[\x01-\x1F\x7F]/g, char => `<span style="color: red;">x${char.charCodeAt(0).toString(16).padStart(2, '0')}</span>`);
-    tableContent += `<tr><td style="border: 1px solid #ddd; padding: 8px; width: 50%;">${formattedQuery}</td><td style="border: 1px solid #ddd; padding: 8px; width: 50%;">${formattedOutput}</td></tr>`;
-});
+            result.queries.forEach((query, index) => {
+            const formattedQuery = query.replace(/[\x01-\x1F\x7F]/g, char => `<span style="color: red;"> x${char.charCodeAt(0).toString(16).padStart(2, '0')}</span>`);
+            const formattedOutput = result.outputs[index].replace(/[\x01-\x1F\x7F]/g, char => `<span style="color: red;">x${char.charCodeAt(0).toString(16).padStart(2, '0')}</span>`);
+            tableContent += `<tr><td style="border: 1px solid #ddd; padding: 8px; width: 50%;">${formattedQuery}</td><td style="border: 1px solid #ddd; padding: 8px; width: 50%;">${formattedOutput}</td></tr>`;
+            });
             tableContent += '</table>';
             accordionContent.innerHTML = tableContent;
+
+            // Reset the submit button
+            button.disabled = false;
+            button.textContent = 'Run Query';
         }
+        
 
         function toggleAccordion() {
             const content = document.getElementById('accordionContent');
@@ -156,8 +161,8 @@ result.queries.forEach((query, index) => {
                     <div class="radio-group">
                         <label>Select Model:</label>
                         <label><input type="radio" name="model" value="gpt-4o" checked> GPT-4o</label>
-                        <label><input type="radio" name="model" value="gpt-4o-mini"> GPT-4o-mini</label>
-                        <label><input type="radio" name="model" value="o1-mini"> o1-mini</label>
+                        <label><input type="radio" name="model" value="gpt-4o-mini">GPT-4o-mini</label>
+                        <label><input type="radio" name="model" value="o1-mini">o1-mini</label>
                         <label><input type="radio" name="model" value="claude-3-5-sonnet-20241022"> Claude-Sonnet</label>
                         <label><input type="radio" name="model" value="claude-3-haiku-20240307"> Claude-Haiku</label>
                     </div>
