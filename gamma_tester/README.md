@@ -8,5 +8,6 @@ After you clone this repository, you can launch a local gamma-testing UI (runnin
 2. source venv/bin/activate
 3. pip install flask requests numpy anthropic openai
 4. python app.py
+5. Access UI at http://127.0.0.1:5000/
 
 You may then input your API keys for the desired models in the UI entry forms, and test away!
