@@ -111,7 +111,7 @@
             const result = await response.json();
             const gammaValue = result.gamma.toFixed(3);
             const centralAnswer = result.answer;
-            document.getElementById('outputText').textContent = `Gamma: ${gammaValue}\n\nCentral Answer: ${centralAnswer}`;
+            document.getElementById('outputText').textContent = `Gamma: ${gammaValue}\n\nCentral Answer:\n ${centralAnswer}`;
 
             // Populate accordion with queries and outputs
             const accordionContent = document.getElementById('accordionContent');
@@ -146,7 +146,7 @@ result.queries.forEach((query, index) => {
                 This is just one possible implementation based on the theory introduced in that paper, based on the codebase <a href="https://github.com/nkersting/harmonic_robustness">here</a>.</p>
                 <p>Usage:</p>
                 <p>1. Select a model from the list</p>
-                <p>2. Enter your API keys (note OPENAI is required for embedding lookups</p>
+                <p>2. Enter your relevant API keys (note: OPENAI_API_KEY is required for all models' embedding lookups</p>
                 <p>3. Select the number of variants (N) to generate. In general, higher N gives more accurate results, but takes longer to process.</p>
                 <p>4. Enter a query in the "Query" field.</p>
                 <p>5. Click the "Submit" button to measure hallucination liklihood, where results appear in the right panel.</p>
