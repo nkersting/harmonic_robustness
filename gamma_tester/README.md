@@ -13,3 +13,11 @@ You can add more OpenAI or Anthropic models to the list by editing the radio sel
 5. Access UI at http://127.0.0.1:5000/
 
 You may then input your API keys for the desired models in the UI entry forms.
+
+## Usage
+
+After Setup you should see the following UI:
+<p align="center">
+  <picture>
+    <img alt="Hallucination UI" src="https://www.quantumrepoire.com/ui-sample.png" width="2000" height="924" style="max-width: 100%;">
+  </picture>
