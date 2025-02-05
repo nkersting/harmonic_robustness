@@ -1,6 +1,8 @@
 # Gamma Hallucination Metric Local API
 
+Herein is code to power a UI for measuring the gamma of an LLM response, as described in our paper "Harmonic LLMs are Trustworthy" (https://arxiv.org/abs/2404.19708).
 After you clone this repository, you can launch a local gamma-testing UI (running via Flask) for various models.
+You can add more OpenAI or Anthropic models to the list by editing the radio selectors in templates/index.html in the obvious way; for other models, you may need to define a new module interface similar to ../GPT4Tester.py and reference that in the app.py . 
 
 ## Setup
 
@@ -10,4 +12,4 @@ After you clone this repository, you can launch a local gamma-testing UI (runnin
 4. python app.py
 5. Access UI at http://127.0.0.1:5000/
 
-You may then input your API keys for the desired models in the UI entry forms, and test away!
+You may then input your API keys for the desired models in the UI entry forms.
