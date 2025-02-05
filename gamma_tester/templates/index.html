@@ -142,11 +142,11 @@ result.queries.forEach((query, index) => {
         </div>
         <div class="panel">
             <div class="info-box">
-                <p>This is a simple interface around the Harmonic Robustness technique for measuring LLM Hallucination as described in the paper <a href="https://arxiv.org/abs/2404.19708">"Harmonic LLMs are Trustworthy"</a>.
+                <p>This is a simple interface around the Harmonic Robustness technique for measuring LLM hallucination via proxy stability under harmonic perturbations as described in the paper <a href="https://arxiv.org/abs/2404.19708">"Harmonic LLMs are Trustworthy"</a>.
                 This is just one possible implementation based on the theory introduced in that paper, based on the codebase <a href="https://github.com/nkersting/harmonic_robustness">here</a>.</p>
                 <p>Usage:</p>
-                <p>1. Select a model from the list</p>
-                <p>2. Enter your relevant API keys (note: OPENAI_API_KEY is required for all models' embedding lookups</p>
+                <p>1. Select a model from the list.</p>
+                <p>2. Enter your relevant API keys (note: OPENAI_API_KEY is required for all models' embedding lookups).</p>
                 <p>3. Select the number of variants (N) to generate. In general, higher N gives more accurate results, but takes longer to process.</p>
                 <p>4. Enter a query in the "Query" field.</p>
                 <p>5. Click the "Submit" button to measure hallucination liklihood, where results appear in the right panel.</p>
