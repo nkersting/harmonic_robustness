@@ -360,27 +360,35 @@
                 return;
             }
 
-            const steps = 20;
+            const steps = 2;
             const dx = (selXMax - selXMin) / steps;
             const dy = (selYMax - selYMin) / steps;
-            // we first compute the value of the function in the center of this region
-            const center_x = selXMin + (selXMax - selXMin) / 2;
-            const center_y = selYMin + (selYMax - selYMin) / 2;
-            const center_value = f(center_x, center_y);
-            // now we subtract that from the average value of the function over the whole region
+            // at each point of the grid, compute the function value minus the average of its neighbors in a small radius
             let sumDiff = 0;
             let count = 0;
-            for (let i = 0; i <= steps; i++) {
-                const x = selXMin + i * dx;
-                for (let j = 0; j <= steps; j++) {
+            for (let i = 1; i < steps; i++) {
+                for (let j = 1; j < steps; j++) {
+                    const x = selXMin + i * dx;
                     const y = selYMin + j * dy;
-                    const z = f(x, y);
-                    sumDiff += z;
+                    const val = f(x, y);
+                    let neighborSum = 0;
+                    for (let di = -1; di <= 1; di++) {
+                        for (let dj = -1; dj <= 1; dj++) {
+                            if (!(di === 0 && dj === 0)) {
+                                const nx = x + di * dx/4;
+                                const ny = y + dj * dy/4;
+                                neighborSum += f(nx, ny);
+                            }
+                        }
+                    }
+                    const avgNeighbors = neighborSum / 8;
+                    sumDiff += Math.abs(val - avgNeighbors);
                     count++;
                 }
             }
 
-            displayHarmoniticity(center_value - sumDiff / count);
+
+            displayHarmoniticity(sumDiff / count || 0);
         }
 
 
