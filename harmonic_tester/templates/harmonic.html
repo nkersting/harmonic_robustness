@@ -387,7 +387,7 @@
         window.onload = initSelection;
 
         function showTooltip(event) {
-            const canvas = document.getElementById('plot-canvas');
+            const canvas = event.target;
             const tooltip = document.getElementById('tooltip');
             const rect = canvas.getBoundingClientRect();
             const x = event.clientX - rect.left;
@@ -558,7 +558,9 @@ function plotData(data) {
         <input type="number" id="min-samples-split" placeholder="min_samples_split" value="2">
         
         <button onclick="sendParameters()">Submit Parameters</button>
-        <canvas id="right-canvas" width="800" height="600"></canvas>
+        <canvas id="right-canvas" width="800" height="600" onmousemove="showTooltip(event)" onmouseout="hideTooltip()"></canvas>
+        <div id="tooltip" class="tooltip"></div>
+
     </div>
 </body>
 </html>
