@@ -38,6 +38,15 @@
         .canvas-controls button {
             margin: 0 5px;
         }
+        .parameter-inputs {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .parameter-inputs input {
+            margin: 5px;
+        }
     </style>
     <script>
         function plotFunction() {
@@ -406,6 +415,28 @@
 
             plotFunction();
         }
+
+        function sendParameters() {
+            const nEstimators = document.getElementById('n-estimators').value;
+            const learningRate = document.getElementById('learning-rate').value;
+            const maxDepth = document.getElementById('max-depth').value;
+            const minSamplesSplit = document.getElementById('min-samples-split').value;
+
+            fetch('/process_parameters', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    n_estimators: nEstimators,
+                    learning_rate: learningRate,
+                    max_depth: maxDepth,
+                    min_samples_split: minSamplesSplit
+                })
+            }).then(response => response.json())
+              .then(data => console.log(data))
+              .catch(error => console.error('Error:', error));
+        }
     </script>
 </head>
 <body>
@@ -432,5 +463,12 @@
         <button onclick="decreaseCanvasSize()">+</button>
     </div>
     <div id="tooltip" class="tooltip"></div>
+    <div class="parameter-inputs">
+        <input type="number" id="n-estimators" placeholder="n_estimators" value="5">
+        <input type="number" id="learning-rate" placeholder="learning_rate" value="0.1">
+        <input type="number" id="max-depth" placeholder="max_depth" value="1">
+        <input type="number" id="min-samples-split" placeholder="min_samples_split" value="2">
+        <button onclick="sendParameters()">Submit Parameters</button>
+    </div>
 </body>
 </html>
