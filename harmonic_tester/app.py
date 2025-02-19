@@ -19,22 +19,22 @@ def index():
 @app.route('/process_parameters', methods=['POST'])
 def process_parameters():
     data = request.get_json()
-    n_estimators = data.get('n_estimators')
-    learning_rate = data.get('learning_rate')
-    max_depth = data.get('max_depth')
-    min_samples_split = data.get('min_samples_split')
+    n_estimators = int(data.get('n_estimators'))
+    learning_rate = float(data.get('learning_rate'))
+    max_depth = int(data.get('max_depth'))
+    min_samples_split = int(data.get('min_samples_split'))
 
-    df=pd.read_csv('../Wine.csv')
-    X=df.drop(['class'],axis=1)
-    y=df['class']
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,stratify=y, random_state=42)
+    df = pd.read_csv('../Wine.csv')
+    X = df.drop(['class'], axis=1)
+    y = df['class']
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
     # The two strongest features are Proline and Magnesium; however for pedagogical purposes we somewhat arbitrarily choose 2 of the weaker features 
     chosen_features = ['Flavanoids', 'OD280/OD315 of diluted wines']
-    X_train_reduced= X_train[chosen_features]
+    X_train_reduced = X_train[chosen_features]
     X_test_reduced = X_test[chosen_features]
 
     # Initialize the Gradient Boosting model
-    gbdt_1 = GradientBoostingClassifier(n_estimators=5, learning_rate=0.1, max_depth=1, min_samples_split=2, random_state=42)
+    gbdt_1 = GradientBoostingClassifier(n_estimators=n_estimators, learning_rate=learning_rate, max_depth=max_depth, min_samples_split=min_samples_split, random_state=42)
 
     # Train the model using the reduced feature set
     gbdt_1.fit(X_train_reduced, y_train)
@@ -43,15 +43,31 @@ def process_parameters():
     print(f"Train Accuracy: {accuracy_score(y_train, gbdt_1.predict(X_train_reduced)):.4f}")
     print(f"Test Accuracy: {accuracy_score(y_test, gbdt_1.predict(X_test_reduced)):.4f}")
 
-    # Do something with the parameters
-    result = {
-        'n_estimators': n_estimators,
-        'learning_rate': learning_rate,
-        'max_depth': max_depth,
-        'min_samples_split': min_samples_split
-    }
+    # Create a mesh grid over the feature space
+    x_min, x_max = X_train_reduced[chosen_features[0]].min() - 1, X_train_reduced[chosen_features[0]].max() + 1
+    y_min, y_max = X_train_reduced[chosen_features[1]].min() - 1, X_train_reduced[chosen_features[1]].max() + 1
 
-    return jsonify(result)
+    xx, yy = np.meshgrid(np.linspace(x_min, x_max, 500), 
+                         np.linspace(y_min, y_max, 500))
+
+    # Predict on the grid points
+    Z = gbdt_1.predict(np.c_[xx.ravel(), yy.ravel()])
+    Z = Z.reshape(xx.shape)
+
+    # Convert the mesh grid and prediction results to lists
+    xx_list = xx.tolist()
+    yy_list = yy.tolist()
+    Z_list = Z.tolist()
+
+    return jsonify({
+        'x_min': x_min,
+        'x_max': x_max,
+        'y_min': y_min,
+        'y_max': y_max,
+        'xx': xx_list,
+        'yy': yy_list,
+        'Z': Z_list
+    })
 
 if __name__ == '__main__':
     app.run(debug=True)
