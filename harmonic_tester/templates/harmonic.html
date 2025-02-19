@@ -392,8 +392,113 @@
             displayHarmoniticity(sumDiff / count || 0);
         }
 
-        // Ensure selection can be initialized right away
-        window.onload = initSelection;
+
+        // Compute harmoniticity for the selected region on right-canvas
+        function computeHarmoniticityInRegionRightCanvas() {
+            const canvas = document.getElementById('right-canvas');
+            const width = canvas.width, height = canvas.height;
+            const xMin = window2.xMin;
+            const xMax = window2.xMax;
+            const yMin = window2.yMin;
+            const yMax = window2.yMax;
+
+            // Convert selection to (x,y) limits
+            const left = Math.min(selectionStartRight.x, selectionEndRight.x);
+            const right = Math.max(selectionStartRight.x, selectionEndRight.x);
+            const top = Math.min(selectionStartRight.y, selectionEndRight.y);
+            const bottom = Math.max(selectionStartRight.y, selectionEndRight.y);
+
+            const selXMin = xMin + (xMax - xMin) * left / width;
+            const selXMax = xMin + (xMax - xMin) * right / width;
+            const selYMax = yMin + (yMax - yMin) * (height - top) / height;
+            const selYMin = yMin + (yMax - yMin) * (height - bottom) / height;
+
+            // Reuse existing function logic
+            const steps = 20;
+            const dx = (selXMax - selXMin) / steps;
+            const dy = (selYMax - selYMin) / steps;
+            const values = [];
+            for (let i = 0; i <= steps; i++) {
+                const row = [];
+                const xx = selXMin + i * dx;
+                for (let j = 0; j <= steps; j++) {
+                    const yy = selYMin + j * dy;
+                    row.push(currentData.Z[i * (steps + 1) + j]); // Access Z values from currentData
+                }
+                values.push(row);
+            }
+            let sumDiff = 0, count = 0;
+            for (let i = 1; i < steps; i++) {
+                for (let j = 1; j < steps; j++) {
+                    const val = values[i][j];
+                    let neighborSum = 0;
+                    for (let di = -1; di <= 1; di++) {
+                        for (let dj = -1; dj <= 1; dj++) {
+                            if (!(di === 0 && dj === 0)) {
+                                neighborSum += values[i + di][j + dj];
+                            }
+                        }
+                    }
+                    sumDiff += (val - neighborSum / 8);
+                    count++;
+                }
+            }
+            displayHarmoniticityRightCanvas(sumDiff / count || 0);
+        }
+
+        // Display harmoniticity for right-canvas
+        function displayHarmoniticityRightCanvas(value) {
+            const canvas = document.getElementById('right-canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, 30); // Clear previous text
+            ctx.fillStyle = 'black';
+            ctx.font = '20px Arial';
+            ctx.fillText(`Gamma: ${(1000 * value).toFixed(5)}`, 10, 20);
+        }
+
+               // Initialize selection for right-canvas
+               function initSelectionRightCanvas() {
+            const canvas = document.getElementById('right-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.addEventListener('mousedown', (e) => {
+                isSelectingRight = true;
+                selectionStartRight.x = e.offsetX;
+                selectionStartRight.y = e.offsetY;
+            });
+            canvas.addEventListener('mousemove', (e) => {
+                if (!isSelectingRight) return;
+                selectionEndRight.x = e.offsetX;
+                selectionEndRight.y = e.offsetY;
+                // Redraw selection overlay
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                plotData(currentData); // Re-draw heatmap under the overlay
+                ctx.strokeStyle = 'yellow';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(
+                    selectionStartRight.x,
+                    selectionStartRight.y,
+                    selectionEndRight.x - selectionStartRight.x,
+                    selectionEndRight.y - selectionStartRight.y
+                );
+            });
+            canvas.addEventListener('mouseup', () => {
+                isSelectingRight = false;
+                computeHarmoniticityInRegionRightCanvas();
+            });
+        }
+
+        // Variables for right-canvas selection
+        let isSelectingRight = false;
+        let selectionStartRight = { x: 0, y: 0 };
+        let selectionEndRight = { x: 0, y: 0 };
+        let currentData = null; // Store the latest plotted data
+
+         // Ensure selection can be initialized right away
+         window.onload = function() {
+            initSelection(); // For plot-canvas
+            initSelectionRightCanvas(); // For right-canvas
+        };
+
 
         function showTooltip(event) {
             const canvas = event.target;
@@ -496,6 +601,7 @@
     });
 }
 function plotData(data) {
+    currentData = data; // Store the latest data globally
     const canvas = document.getElementById('right-canvas');
     const ctx = canvas.getContext('2d');
 
