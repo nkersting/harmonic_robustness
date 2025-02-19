@@ -12,3 +12,10 @@ This project is a Flask-based web application for testing harmonic functions and
 3. pip install flask numpy pandas sklearn
 4. python app.py
 5. Access UI at http://127.0.0.1:5000/
+
+
+After Setup you should see the following UI:
+<p align="center">
+  <picture>
+    <img alt="Harmonic UI" src="https://www.quantumrepoire.com/harmonic.png" width="2000" height="924" style="max-width: 100%;">
+  </picture>
