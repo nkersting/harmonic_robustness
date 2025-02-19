@@ -7,8 +7,8 @@
     <style>
         body {
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            flex-direction: row;
+            align-items: flex-start;
             justify-content: center;
             height: 100vh;
             margin: 0;
@@ -38,14 +38,21 @@
         .canvas-controls button {
             margin: 0 5px;
         }
-        .parameter-inputs {
+        .parameter-pane {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            margin-top: 20px;
+            align-items: flex-start;
+            margin-left: 20px;
+            padding: 10px;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
-        .parameter-inputs input {
-            margin: 5px;
+        .parameter-pane label {
+            margin: 5px 0;
+        }
+        .parameter-pane input {
+            margin-bottom: 10px;
         }
     </style>
     <script>
@@ -440,34 +447,44 @@
     </script>
 </head>
 <body>
-    <div class="input-box">
-        <label for="function-input">Enter function f(x, y): </label>
-        <input type="text" id="function-input" value="sin(sin(exp(x*y)))">
-        <button onclick="plotFunction()">Plot</button>
-        <button onclick="generateRandomFunction()">Generate</button>
-        <br>
-        <label for="x-min">x-min: </label>
-        <input type="number" id="x-min" value="-1">
-        <label for="x-max">x-max: </label>
-        <input type="number" id="x-max" value="1">
-        <br>
-        <label for="y-min">y-min: </label>
-        <input type="number" id="y-min" value="-1">
-        <label for="y-max">y-max: </label>
-        <input type="number" id="y-max" value="1">
-        <br>
+    <div class="main-content">
+        <div class="input-box">
+            <label for="function-input">Enter function f(x, y): </label>
+            <input type="text" id="function-input" value="sin(sin(exp(x*y)))">
+            <button onclick="plotFunction()">Plot</button>
+            <button onclick="generateRandomFunction()">Generate</button>
+            <br>
+            <label for="x-min">x-min: </label>
+            <input type="number" id="x-min" value="-1">
+            <label for="x-max">x-max: </label>
+            <input type="number" id="x-max" value="1">
+            <br>
+            <label for="y-min">y-min: </label>
+            <input type="number" id="y-min" value="-1">
+            <label for="y-max">y-max: </label>
+            <input type="number" id="y-max" value="1">
+            <br>
+        </div>
+        <canvas id="plot-canvas" width="800" height="600" onmousemove="showTooltip(event)" onmouseout="hideTooltip()"></canvas>
+        <div class="canvas-controls">
+            <button onclick="increaseCanvasSize()">-</button>
+            <button onclick="decreaseCanvasSize()">+</button>
+        </div>
+        <div id="tooltip" class="tooltip"></div>
     </div>
-    <canvas id="plot-canvas" width="800" height="600" onmousemove="showTooltip(event)" onmouseout="hideTooltip()"></canvas>
-    <div class="canvas-controls">
-        <button onclick="increaseCanvasSize()">-</button>
-        <button onclick="decreaseCanvasSize()">+</button>
-    </div>
-    <div id="tooltip" class="tooltip"></div>
-    <div class="parameter-inputs">
+    <div class="parameter-pane">
+        <label for="n-estimators">n_estimators:</label>
         <input type="number" id="n-estimators" placeholder="n_estimators" value="5">
+        
+        <label for="learning-rate">learning_rate:</label>
         <input type="number" id="learning-rate" placeholder="learning_rate" value="0.1">
+        
+        <label for="max-depth">max_depth:</label>
         <input type="number" id="max-depth" placeholder="max_depth" value="1">
+        
+        <label for="min-samples-split">min_samples_split:</label>
         <input type="number" id="min-samples-split" placeholder="min_samples_split" value="2">
+        
         <button onclick="sendParameters()">Submit Parameters</button>
     </div>
 </body>
