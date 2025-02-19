@@ -475,6 +475,8 @@ function plotData(data) {
     const X_train = data.train_x;
     const Y_train = data.train_y;
     const Z_train = data.train_z;
+    const train_accuracy = data.train_accuracy;
+    const test_accuracy = data.test_accuracy;
 
 
     // Example plotting logic (you may need to adjust this based on your data)
@@ -503,6 +505,13 @@ function plotData(data) {
         ctx.strokeStyle = 'black';
         ctx.strokeRect(x, y, 5, 5); // Draw a thin black outline
     }
+
+    // Display the training and test accuracy
+    ctx.fillStyle = 'black';
+    ctx.font = '20px Arial';
+    ctx.fillText(`Train accuracy: ${(train_accuracy * 100).toFixed(2)}%`, 10, 20);
+    ctx.fillText(`Test accuracy: ${(test_accuracy * 100).toFixed(2)}%`, 10, 40);
+
 }
     </script>
 </head>

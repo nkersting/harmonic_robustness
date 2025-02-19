@@ -40,8 +40,10 @@ def process_parameters():
     gbdt_1.fit(X_train_reduced, y_train)
 
     # Measure accuracy
-    print(f"Train Accuracy: {accuracy_score(y_train, gbdt_1.predict(X_train_reduced)):.4f}")
-    print(f"Test Accuracy: {accuracy_score(y_test, gbdt_1.predict(X_test_reduced)):.4f}")
+    train_accuracy = accuracy_score(y_train, gbdt_1.predict(X_train_reduced))
+    test_accuracy = accuracy_score(y_test, gbdt_1.predict(X_test_reduced))
+    print(f"Train Accuracy: {train_accuracy:.4f}")
+    print(f"Test Accuracy: {test_accuracy:.4f}")
 
     # Create a mesh grid over the feature space
     x_min, x_max = X_train_reduced[chosen_features[0]].min() - 1, X_train_reduced[chosen_features[0]].max() + 1
@@ -77,7 +79,9 @@ def process_parameters():
         'Z': Z_list,
         'train_x': X_train_reduced[chosen_features[0]].tolist(),
         'train_y': X_train_reduced[chosen_features[1]].tolist(),
-        'train_z': y_train.tolist()
+        'train_z': y_train.tolist(),
+        'train_accuracy': train_accuracy,
+        'test_accuracy': test_accuracy
     })
 
 if __name__ == '__main__':
