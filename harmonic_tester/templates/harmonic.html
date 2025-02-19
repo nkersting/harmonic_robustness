@@ -412,37 +412,33 @@
             const selYMax = yMin + (yMax - yMin) * (height - top) / height;
             const selYMin = yMin + (yMax - yMin) * (height - bottom) / height;
 
-            // find all points in currentData.xx and currentData.yy that are in the selected region
-            const selected_points = [];
+            // compute anharmoniticity in the selected region
             sumDiff = 0;
             count = 0;
             for (let i = 0; i < currentData.xx.length; i++) {
                 const x = currentData.xx[i];
                 const y = currentData.yy[i];
                 if (x >= selXMin && x <= selXMax && y >= selYMin && y <= selYMax) {
-                    selected_points.push(i);
-                    sumDiff += currentData.Z[i];
-                    count++;
-                }
-            }
-            // find the point closest to the center of the selected region
-            const center_x = selXMin + (selXMax - selXMin) / 2;
-            const center_y = selYMin + (selYMax - selYMin) / 2;
-            let min_dist = Infinity;
-            let center_index = -1;
-            for (let i = 0; i < selected_points.length; i++) {
-                const x = currentData.xx[selected_points[i]];
-                const y = currentData.yy[selected_points[i]];
-                const dist = Math.sqrt((x - center_x) ** 2 + (y - center_y) ** 2);
-                if (dist < min_dist) {
-                    min_dist = dist;
-                    center_index = selected_points[i];
-                }
-            }
-            // find the Z value at the center point
-            const center_value = currentData.Z[center_index];
+                    // test whether the index mod 1000 is divisible by 3
+                    if (i % 1000 % 3 === 0) {
+                        // find the neighbors of this point as xx and yy form a mesh grid
+                        const left_neighbor = i - 1;
+                        const right_neighbor = i + 1;
+                        const up_neighbor = i - 1000;
+                        const down_neighbor = i + 1000;
+                        // compute average value of neighbors
+                        if (left_neighbor >= 0 && right_neighbor < currentData.xx.length && up_neighbor >= 0 && down_neighbor < currentData.xx.length) {
+                            const sum = currentData.Z[left_neighbor] + currentData.Z[right_neighbor] + currentData.Z[up_neighbor] + currentData.Z[down_neighbor];
+                            const avg = sum / 4;
+                            sumDiff += Math.abs(currentData.Z[i] - avg);
+                            count++;
+                        }
+                    }
 
-            displayHarmoniticityRightCanvas( center_value - sumDiff / count);
+                }
+            }
+            
+            displayHarmoniticityRightCanvas( sumDiff / count || 0);
         }
 
         // Display harmoniticity for right-canvas
