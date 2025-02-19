@@ -54,10 +54,18 @@ def process_parameters():
     Z = gbdt_1.predict(np.c_[xx.ravel(), yy.ravel()])
     Z = Z.reshape(xx.shape)
 
+    # scale all Z values between 0 and 1
+    Z = (Z - Z.min()) / (Z.max() - Z.min())
+
     # Convert the mesh grid and prediction results to lists
-    xx_list = xx.tolist()
-    yy_list = yy.tolist()
-    Z_list = Z.tolist()
+    xx_list = xx.ravel().tolist()
+    yy_list = yy.ravel().tolist()
+    
+    # flatten Z to just a 1-D list
+    Z_list = Z.ravel().tolist()
+
+    # scale train_y values between 0 and 1
+    y_train = (y_train - y_train.min()) / (y_train.max() - y_train.min())
 
     return jsonify({
         'x_min': x_min,
@@ -66,7 +74,10 @@ def process_parameters():
         'y_max': y_max,
         'xx': xx_list,
         'yy': yy_list,
-        'Z': Z_list
+        'Z': Z_list,
+        'train_x': X_train_reduced[chosen_features[0]].tolist(),
+        'train_y': X_train_reduced[chosen_features[1]].tolist(),
+        'train_z': y_train.tolist()
     })
 
 if __name__ == '__main__':

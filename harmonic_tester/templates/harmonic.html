@@ -432,26 +432,78 @@
         }
 
         function sendParameters() {
-            const nEstimators = document.getElementById('n-estimators').value;
-            const learningRate = document.getElementById('learning-rate').value;
-            const maxDepth = document.getElementById('max-depth').value;
-            const minSamplesSplit = document.getElementById('min-samples-split').value;
+    const nEstimators = document.getElementById('n-estimators').value;
+    const learningRate = document.getElementById('learning-rate').value;
+    const maxDepth = document.getElementById('max-depth').value;
+    const minSamplesSplit = document.getElementById('min-samples-split').value;
 
-            fetch('/process_parameters', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    n_estimators: nEstimators,
-                    learning_rate: learningRate,
-                    max_depth: maxDepth,
-                    min_samples_split: minSamplesSplit
-                })
-            }).then(response => response.json())
-              .then(data => console.log(data))
-              .catch(error => console.error('Error:', error));
-        }
+    const params = {
+        n_estimators: nEstimators,
+        learning_rate: learningRate,
+        max_depth: maxDepth,
+        min_samples_split: minSamplesSplit
+    };
+
+    fetch('/process_parameters', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(params)
+    })
+    .then(response => response.json())
+    .then(data => {
+        plotData(data);
+    });
+}
+function plotData(data) {
+    const canvas = document.getElementById('right-canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Clear the canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+ 
+
+    // Plot the data
+    const xMin = data.x_min;
+    const xMax = data.x_max;
+    const yMin = data.y_min;
+    const yMax = data.y_max;
+    const xx = data.xx;
+    const yy = data.yy;
+    const Z = data.Z;
+    const X_train = data.train_x;
+    const Y_train = data.train_y;
+    const Z_train = data.train_z;
+
+
+    // Example plotting logic (you may need to adjust this based on your data)
+    const xScale = canvas.width / (xMax - xMin);
+    const yScale = canvas.height / (yMax - yMin);
+
+    ctx.beginPath();
+    for (let i = 0; i < Z.length; i++) {
+            const x = (xx[i] - xMin) * xScale;
+            const y = canvas.height - (yy[i] - yMin) * yScale;
+            const z = Z[i];
+            const color = `hsl(${240 * (1 - z)}, 100%, 50%)`; // Scale from red (z=0) to violet (z=1)
+            ctx.fillStyle = color;
+            ctx.fillRect(x, y, 1, 1); // Draw a point
+    }
+    ctx.stroke();
+
+    // now also plot the training data
+    for (let i = 0; i < Z_train.length; i++) {
+        const x = (X_train[i] - xMin) * xScale;
+        const y = canvas.height - (Y_train[i] - yMin) * yScale;
+        const z = Z_train[i];
+        const color = `hsl(${240 * (1 - z)}, 100%, 50%)`; // Scale from red (z=0) to violet (z=1)
+        ctx.fillStyle = color;
+        ctx.fillRect(x, y, 5, 5); // Draw a point
+        ctx.strokeStyle = 'black';
+        ctx.strokeRect(x, y, 5, 5); // Draw a thin black outline
+    }
+}
     </script>
 </head>
 <body>
@@ -497,6 +549,7 @@
         <input type="number" id="min-samples-split" placeholder="min_samples_split" value="2">
         
         <button onclick="sendParameters()">Submit Parameters</button>
+        <canvas id="right-canvas" width="800" height="600"></canvas>
     </div>
 </body>
 </html>
