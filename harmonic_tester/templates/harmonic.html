@@ -691,20 +691,26 @@ function plotData(data) {
     <div class="vertical-line"></div>
     <div class="parameter-pane">
         <h2>Trained Function</h2>
-        <label for="n-estimators">n_estimators:</label>
-        <input type="number" id="n-estimators" placeholder="n_estimators" value="5">
+        <div class="input-box"></div>
+            <label for="n-estimators">n_estimators:</label>
+            <input type="number" id="n-estimators" placeholder="n_estimators" value="5">
+            
+            <label for="learning-rate">learning_rate:</label>
+            <input type="number" id="learning-rate" placeholder="learning_rate" value="0.1">
+            
+            <label for="max-depth">max_depth:</label>
+            <input type="number" id="max-depth" placeholder="max_depth" value="1">
+            
+            <label for="min-samples-split">min_samples_split:</label>
+            <input type="number" id="min-samples-split" placeholder="min_samples_split" value="2">
+            
+            <button onclick="sendParameters()">Submit Parameters</button>
+            <p style="margin-left: 20px;">
+            Here you can train a Gradient Boosted Decision Tree on the <a href="https://www.kaggle.com/datasets/tawfikelmetwally/wine-dataset/data">Wine dataset</a> using the parameters above, focusing on two of the features only ('Flavanoids', and 'OD280/OD315 of diluted wines'). The decision function and accuracy on the Train/Test sets will be displayed on the right canvas. You can also select a region on the right canvas to compute the harmoniticity of the function in that region. 
+        </p>
+        </div>
         
-        <label for="learning-rate">learning_rate:</label>
-        <input type="number" id="learning-rate" placeholder="learning_rate" value="0.1">
-        
-        <label for="max-depth">max_depth:</label>
-        <input type="number" id="max-depth" placeholder="max_depth" value="1">
-        
-        <label for="min-samples-split">min_samples_split:</label>
-        <input type="number" id="min-samples-split" placeholder="min_samples_split" value="2">
-        
-        <button onclick="sendParameters()">Submit Parameters</button>
-        <canvas id="right-canvas" width="800" height="600" onmousemove="showTooltip2(event)" onmouseout="hideTooltip2()"></canvas>
+        <canvas id="right-canvas" width="600" height="800" onmousemove="showTooltip2(event)" onmouseout="hideTooltip2()"></canvas>
         <div id="tooltip2" class="tooltip2"></div>
 
     </div>
