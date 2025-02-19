@@ -35,6 +35,7 @@ def process_parameters():
 
     # Initialize the Gradient Boosting model
     gbdt_1 = GradientBoostingClassifier(n_estimators=n_estimators, learning_rate=learning_rate, max_depth=max_depth, min_samples_split=min_samples_split, random_state=42)
+  
 
     # Train the model using the reduced feature set
     gbdt_1.fit(X_train_reduced, y_train)
@@ -49,15 +50,18 @@ def process_parameters():
     x_min, x_max = X_train_reduced[chosen_features[0]].min() - 1, X_train_reduced[chosen_features[0]].max() + 1
     y_min, y_max = X_train_reduced[chosen_features[1]].min() - 1, X_train_reduced[chosen_features[1]].max() + 1
 
-    xx, yy = np.meshgrid(np.linspace(x_min, x_max, 500), 
-                         np.linspace(y_min, y_max, 500))
+    xx, yy = np.meshgrid(np.linspace(x_min, x_max, 1000), 
+                         np.linspace(y_min, y_max, 1000))
 
     # Predict on the grid points
     Z = gbdt_1.predict(np.c_[xx.ravel(), yy.ravel()])
     Z = Z.reshape(xx.shape)
+    z_min = Z.min()
+    z_max = Z.max()
 
-    # scale all Z values between 0 and 1
-    Z = (Z - Z.min()) / (Z.max() - Z.min())
+    # scale all Z values between 0 and 1 
+    Z = (Z - z_min) / (z_max - z_min)
+
 
     # Convert the mesh grid and prediction results to lists
     xx_list = xx.ravel().tolist()
@@ -81,7 +85,7 @@ def process_parameters():
         'train_y': X_train_reduced[chosen_features[1]].tolist(),
         'train_z': y_train.tolist(),
         'train_accuracy': train_accuracy,
-        'test_accuracy': test_accuracy
+        'test_accuracy': test_accuracy,
     })
 
 if __name__ == '__main__':

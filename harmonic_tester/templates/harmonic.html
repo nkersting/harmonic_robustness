@@ -363,33 +363,24 @@
             const steps = 20;
             const dx = (selXMax - selXMin) / steps;
             const dy = (selYMax - selYMin) / steps;
-            const values = [];
+            // we first compute the value of the function in the center of this region
+            const center_x = selXMin + (selXMax - selXMin) / 2;
+            const center_y = selYMin + (selYMax - selYMin) / 2;
+            const center_value = f(center_x, center_y);
+            // now we subtract that from the average value of the function over the whole region
+            let sumDiff = 0;
+            let count = 0;
             for (let i = 0; i <= steps; i++) {
-                const row = [];
-                const xx = selXMin + i * dx;
+                const x = selXMin + i * dx;
                 for (let j = 0; j <= steps; j++) {
-                    const yy = selYMin + j * dy;
-                    row.push(f(xx, yy));
-                }
-                values.push(row);
-            }
-            let sumDiff = 0, count = 0;
-            for (let i = 1; i < steps; i++) {
-                for (let j = 1; j < steps; j++) {
-                    const val = values[i][j];
-                    let neighborSum = 0;
-                    for (let di = -1; di <= 1; di++) {
-                        for (let dj = -1; dj <= 1; dj++) {
-                            if (!(di === 0 && dj === 0)) {
-                                neighborSum += values[i + di][j + dj];
-                            }
-                        }
-                    }
-                    sumDiff += (val - neighborSum / 8);
+                    const y = selYMin + j * dy;
+                    const z = f(x, y);
+                    sumDiff += z;
                     count++;
                 }
             }
-            displayHarmoniticity(sumDiff / count || 0);
+
+            displayHarmoniticity(center_value - sumDiff / count);
         }
 
 
@@ -413,37 +404,37 @@
             const selYMax = yMin + (yMax - yMin) * (height - top) / height;
             const selYMin = yMin + (yMax - yMin) * (height - bottom) / height;
 
-            // Reuse existing function logic
-            const steps = 20;
-            const dx = (selXMax - selXMin) / steps;
-            const dy = (selYMax - selYMin) / steps;
-            const values = [];
-            for (let i = 0; i <= steps; i++) {
-                const row = [];
-                const xx = selXMin + i * dx;
-                for (let j = 0; j <= steps; j++) {
-                    const yy = selYMin + j * dy;
-                    row.push(currentData.Z[i * (steps + 1) + j]); // Access Z values from currentData
-                }
-                values.push(row);
-            }
-            let sumDiff = 0, count = 0;
-            for (let i = 1; i < steps; i++) {
-                for (let j = 1; j < steps; j++) {
-                    const val = values[i][j];
-                    let neighborSum = 0;
-                    for (let di = -1; di <= 1; di++) {
-                        for (let dj = -1; dj <= 1; dj++) {
-                            if (!(di === 0 && dj === 0)) {
-                                neighborSum += values[i + di][j + dj];
-                            }
-                        }
-                    }
-                    sumDiff += (val - neighborSum / 8);
+            // find all points in currentData.xx and currentData.yy that are in the selected region
+            const selected_points = [];
+            sumDiff = 0;
+            count = 0;
+            for (let i = 0; i < currentData.xx.length; i++) {
+                const x = currentData.xx[i];
+                const y = currentData.yy[i];
+                if (x >= selXMin && x <= selXMax && y >= selYMin && y <= selYMax) {
+                    selected_points.push(i);
+                    sumDiff += currentData.Z[i];
                     count++;
                 }
             }
-            displayHarmoniticityRightCanvas(sumDiff / count || 0);
+            // find the point closest to the center of the selected region
+            const center_x = selXMin + (selXMax - selXMin) / 2;
+            const center_y = selYMin + (selYMax - selYMin) / 2;
+            let min_dist = Infinity;
+            let center_index = -1;
+            for (let i = 0; i < selected_points.length; i++) {
+                const x = currentData.xx[selected_points[i]];
+                const y = currentData.yy[selected_points[i]];
+                const dist = Math.sqrt((x - center_x) ** 2 + (y - center_y) ** 2);
+                if (dist < min_dist) {
+                    min_dist = dist;
+                    center_index = selected_points[i];
+                }
+            }
+            // find the Z value at the center point
+            const center_value = currentData.Z[center_index];
+
+            displayHarmoniticityRightCanvas( center_value - sumDiff / count);
         }
 
         // Display harmoniticity for right-canvas
