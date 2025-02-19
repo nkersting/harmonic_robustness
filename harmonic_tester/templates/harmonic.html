@@ -655,8 +655,8 @@ function plotData(data) {
     // Display the training and test accuracy
     ctx.fillStyle = 'black';
     ctx.font = '20px Arial';
-    ctx.fillText(`Train accuracy: ${(train_accuracy * 100).toFixed(2)}%`, 10, 20);
-    ctx.fillText(`Test accuracy: ${(test_accuracy * 100).toFixed(2)}%`, 10, 40);
+    ctx.fillText(`Train accuracy: ${(train_accuracy * 100).toFixed(2)}%`, 10, canvas.height - 40);
+    ctx.fillText(`Test accuracy: ${(test_accuracy * 100).toFixed(2)}%`, 10, canvas.height - 20);
 
 }
     </script>
