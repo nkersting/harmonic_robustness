@@ -165,6 +165,7 @@
                         <label><input type="radio" name="model" value="o1-mini">o1-mini</label>
                         <label><input type="radio" name="model" value="claude-3-5-sonnet-20241022"> Claude-Sonnet</label>
                         <label><input type="radio" name="model" value="claude-3-haiku-20240307"> Claude-Haiku</label>
+                        <label><input type="radio" name="model" value="deepseek-reasoner"> DeepSeek-R1</label>
                     </div>
                     <div class="input-group">
                         <label for="openaiapiKey">OPENAI API Key (req):</label>
@@ -173,6 +174,10 @@
                     <div class="input-group">
                         <label for="anthropicapiKey">ANTHROPIC API Key:</label>
                         <input type="text" id="anthropicapiKey" name="anthropicapiKey" value="sk-ant-...." style="color: grey;" onfocus="if(this.value=='sk-ant-....'){this.value=''; this.style.color='black';}" onblur="if(this.value==''){this.value='sk-ant-....'; this.style.color='grey';}">
+                    </div>
+                    <div class="input-group">
+                        <label for="deepseekapiKey">DEEPSEEK API Key:</label>
+                        <input type="text" id="deepseekapiKey" name="deepseekapi" value="sk-...." style="color: grey;" onfocus="if(this.value=='sk-....'){this.value=''; this.style.color='black';}" onblur="if(this.value==''){this.value='sk-....'; this.style.color='grey';}">
                     </div>
                     <div class="input-group">
                         <label for="query">Query:</label>

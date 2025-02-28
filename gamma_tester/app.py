@@ -5,6 +5,7 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from ClaudeTester import ClaudeTester
 from GPT4Tester import GPT4Tester
+from DeepSeekTester import DeepSeekTester
 
 app = Flask(__name__)
 
@@ -37,6 +38,8 @@ def process_query():
         tester = ClaudeTester(model, radius=N, ord_limit=31, ord_size=3, temperature=0)
     elif "gpt" in model or "o1" in model:
         tester = GPT4Tester(model, radius=N, ord_limit=31, ord_size=3, temperature=0)
+    elif "deepseek" in model:
+        tester = DeepSeekTester(model, radius=N, ord_limit=31, ord_size=3, temperature=0)
 
     if tester is not None:
         results = tester.anharmoniticity(query)
