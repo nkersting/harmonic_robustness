@@ -3,7 +3,7 @@ import json
 
 recs = []
 
-f = open('/Users/lordkersting/Downloads/responses.jsonl', 'r')
+f = open('responses.json', 'r')
 counter = 0
 for line in f.readlines():
     counter += 1

@@ -122,38 +122,11 @@ def main():
     mag = 100
     sampling_fraction = 0.001
 
-    #path = '/Users/lordkersting/neuro/Downloads/animals_small/raw-img/gallina/'
-    #outfile = open('gallina.vit.out', 'w')
-
-    #path = '/Users/lordkersting/neuro/Downloads/animals_small/raw-img/cane/'
-    #outfile = open('cane.vit.out', 'w')
-
-
-    #path = '/Users/lordkersting/neuro/Downloads/animals_small/raw-img/cavallo/'
-    #outfile = open('cavallo.vit.out', 'w')
-
-    
-    #path = '/Users/lordkersting/neuro/Downloads/animals_small/raw-img/elefante/'
-    #outfile = open('elefante.vit.out', 'w') 
-
-    #path = '/Users/lordkersting/neuro/Downloads/animals_small/raw-img/pecora/'
-    #outfile = open('pecora.vit.out', 'w') 
-
-    #path = '/Users/lordkersting/neuro/Downloads/animals_small/raw-img/scoiattolo/'
-    #outfile = open('scoiattolo.vit.out', 'w')
-    #outfile = open('scoiattolo.1.out', 'w') 
-
-    #path = '/Users/lordkersting/neuro/Downloads/animals_small/raw-img/farfalla/'
-    #outfile = open('farfalla.vit.out', 'w')
+   
 
     path = '/Users/lordkersting/neuro/Downloads/animals_small/raw-img/ragno/'
     outfile = open('ragno.vit.out', 'w')
 
-    #path = '/Users/lordkersting/neuro/Downloads/animals_small/raw-img/mucca/'
-    #outfile = open('mucca.vit.out', 'w')
-
-    #path = '/Users/lordkersting/neuro/Downloads/animals_small/raw-img/gatto/'
-    #outfile = open('gatto.vit.out', 'w')
 
     image_path = "images/"
     num_steps = 25
@@ -171,8 +144,6 @@ def main():
         small_gray_image = currtester.image_to_gray_image(small_image)
         curr_point = currtester.gray_image_to_vector(small_gray_image)
         img_class, img_idx = currtester.ViT_predict(small_gray_image)
-        #print(f"Starting out with central image: {img_idx}, {img_class}")
-        #print(f"Anharmoniticity for {idx} is {currtester.anharmoniticity(curr_point)}")
 
         orig_anharm = currtester.anharmoniticity(curr_point)
         pred_logit, avg_logit = currtester.ViT_predict_logit_and_avg(small_gray_image, img_idx)

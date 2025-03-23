@@ -8,7 +8,7 @@ import numpy as np
 #image = dataset["test"]["image"][0]
 
 
-image = Image.open('/Users/lordkersting/neuro/Downloads/animals_small/raw-img/elefante/e032b10b2df21c22d2524518b7444f92e37fe5d404b0144390f8c07aa5ecb6_640.jpg')
+image = Image.open('elefante/e032b10b2df21c22d2524518b7444f92e37fe5d404b0144390f8c07aa5ecb6_640.jpg')
 
 image_processor = AutoImageProcessor.from_pretrained("google/vit-base-patch16-224")
 model = ViTForImageClassification.from_pretrained("google/vit-base-patch16-224")

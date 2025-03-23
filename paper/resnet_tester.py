@@ -122,38 +122,9 @@ def main():
     mag = 100
     sampling_fraction = 0.001
 
-    #path = '/Users/lordkersting/neuro/Downloads/animals_small/raw-img/gallina/'
-    #outfile = open('gallina.out', 'w')
-
-    #path = '/Users/lordkersting/neuro/Downloads/animals_small/raw-img/cane/'
-    #outfile = open('cane.out', 'w')
-    #outfile = open('cane.100.1.out', 'w')
-
-    #path = '/Users/lordkersting/neuro/Downloads/animals_small/raw-img/cavallo/'
-    #outfile = open('cavallo.100.1.out', 'w')
-
-    
-    #path = '/Users/lordkersting/neuro/Downloads/animals_small/raw-img/elefante/'
-    #outfile = open('elefante.100.1.out', 'w') 
-
-    #path = '/Users/lordkersting/neuro/Downloads/animals_small/raw-img/pecora/'
-    #outfile = open('pecora.out', 'w') 
-
-    #path = '/Users/lordkersting/neuro/Downloads/animals_small/raw-img/scoiattolo/'
-    #outfile = open('scoiattolo.out', 'w')
-    #outfile = open('scoiattolo.1.out', 'w') 
-
-    #path = '/Users/lordkersting/neuro/Downloads/animals_small/raw-img/farfalla/'
-    #outfile = open('farfalla.out', 'w')
-
-    #path = '/Users/lordkersting/neuro/Downloads/animals_small/raw-img/ragno/'
-    #outfile = open('ragno.out', 'w')
-
-    path = '/Users/lordkersting/neuro/Downloads/animals_small/raw-img/mucca/'
-    outfile = open('mucca.out', 'w')
-
-    #path = '/Users/lordkersting/neuro/Downloads/animals_small/raw-img/gatto/'
-    #outfile = open('gatto.out', 'w')
+   
+    path = 'gatto/'
+    outfile = open('gatto.out', 'w')
 
     image_path = "images/"
     num_steps = 25
@@ -170,9 +141,7 @@ def main():
         currtester = ResNetTester(mag, image_side, idx, sampling_fraction)
         small_gray_image = currtester.image_to_gray_image(small_image)
         curr_point = currtester.gray_image_to_vector(small_gray_image)
-        img_class, img_idx = currtester.ResNet_predict(small_gray_image)
-        #print(f"Starting out with central image: {img_idx}, {img_class}")
-        #print(f"Anharmoniticity for {idx} is {currtester.anharmoniticity(curr_point)}")
+        img_class, img_idx = currtester.ResNet_predict(small_gray_image)\
 
         orig_anharm = currtester.anharmoniticity(curr_point)
         pred_logit, avg_logit = currtester.ResNet_predict_logit_and_avg(small_gray_image, img_idx)
@@ -189,7 +158,6 @@ def main():
         outfile.write(output_string)
         curr_image.save(image_path + f"{file}.{num_steps}.adv.jpg")
         
-        #print(f"Closest adversarial point with anharm={anharm} is {currtester.ResNet_predict(currtester.vector_to_gray_image(adv_point, image_side, image_side))}")
 
     outfile.close()
     
