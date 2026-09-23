@@ -8,7 +8,7 @@ def magnitude(vector):
     return np.sqrt(sum(pow(element, 2) for element in vector))
 
 def sin_theta(v1, v2):
-    return np.sqrt(1 - cos_theta(v1,v2))
+    return np.sqrt(1 - cos_theta(v1,v2)*cos_theta(v1,v2))
 
 def cos_theta(v1,v2):
     return np.dot(v1,v2)/magnitude(v1)/magnitude(v2)
