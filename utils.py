@@ -8,7 +8,10 @@ def magnitude(vector):
     return np.sqrt(sum(pow(element, 2) for element in vector))
 
 def sin_theta(v1, v2):
-    return np.sqrt(1 - cos_theta(v1,v2)*cos_theta(v1,v2))
+    # Clamp: rounding can put |cos| a hair over 1 for (near-)parallel vectors,
+    # and the square root of that tiny negative would be NaN instead of 0.
+    c = cos_theta(v1,v2)
+    return np.sqrt(max(0.0, 1 - c*c))
 
 def cos_theta(v1,v2):
     return np.dot(v1,v2)/magnitude(v1)/magnitude(v2)
@@ -216,6 +219,16 @@ def main():
         for j in range(i+1,5):
             dotprod = np.dot(vecs[i],vecs[j])
             assert (dotprod == 0 or dotprod == -4)
+
+    # testing sin_theta: ~0 (never NaN) for parallel vectors, 1 for orthogonal.
+    # Exact 0 is not guaranteed: cos can round just under 1 as well as over.
+    rng = np.random.default_rng(0)
+    for _ in range(200):
+        v = rng.normal(size=1536)
+        s = sin_theta(v, np.mean([v]*5, axis=0))
+        assert not np.isnan(s) and s < 1e-7
+    assert abs(sin_theta(np.array([1,0]), np.array([0,1])) - 1) < 1e-12
+    assert abs(sin_theta(np.array([1,0]), np.array([1,1])) - np.sqrt(0.5)) < 1e-12
 
 if __name__ == "__main__":
     main()
