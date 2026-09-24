@@ -13,9 +13,12 @@ class VectorModelTester(HarmonicTester):
 
     def average_model_value(self, points:list[Point]):
         """
-        Computes a suitable average model value over the given points
+        Computes a suitable average model value over the given points.
+        Returns this average, the points, and the model evaluated at the points,
+        as HarmonicTester.anharmoniticity expects (same shape as LLMTester).
         """
-        return np.mean(np.array([self.model(p) for p in points]))
+        outputs = [self.model(p) for p in points]
+        return np.mean(np.array(outputs)), points, outputs
 
         
     def ball_center_compare(self, central_value, ball_avg_value):
